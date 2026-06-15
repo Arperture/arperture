@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>DOGWALKER</title>
+<link rel="icon" href="https://d8j0ntlcm91z4.cloudfront.net/user_33OO3vKsKDtpmjLQShIWOTRxc3s/hf_20260615_014653_3f9489f0-fb5d-4ebe-bda3-baf4e96fc65a.png" />
+<style>
+  :root{
+    --ink:#22313f; --paper:#fff8ec; --road:#5b6470; --grass:#7ec85a;
+    --accent:#ff7a3c; --accent2:#ffd23f; --danger:#ff4d5e; --good:#39c46a;
+    --shadow:0 6px 0 rgba(0,0,0,.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;background:#1b2430;overflow:hidden;
+    font-family:'Trebuchet MS','Segoe UI',system-ui,sans-serif;color:var(--ink);
+    user-select:none;-webkit-user-select:none;touch-action:none;}
+  #game{position:fixed;inset:0;display:block;width:100%;height:100%;background:#7ec85a;}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    text-align:center;z-index:10;padding:20px;}
+  .overlay.show{display:flex;}
+  .panel{background:var(--paper);border-radius:22px;padding:26px 30px;max-width:520px;width:100%;
+    box-shadow:0 14px 0 rgba(0,0,0,.22), 0 0 0 4px var(--ink);}
+  h1.logo{font-size:clamp(40px,9vw,74px);margin:0 0 4px;letter-spacing:2px;
+    color:var(--accent);text-shadow:3px 3px 0 var(--ink),6px 6px 0 var(--accent2);
+    transform:rotate(-2deg);}
+  .tag{font-size:15px;opacity:.8;margin:0 0 18px;font-style:italic;}
+  .btn{display:inline-block;cursor:pointer;border:none;background:var(--accent);color:#fff;
+    font-weight:bold;font-size:20px;padding:14px 26px;border-radius:14px;margin:6px;
+    box-shadow:var(--shadow);transition:transform .05s;font-family:inherit;}
+  .btn:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.18);}
+  .btn.alt{background:var(--ink);} .btn.go{background:var(--good);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+  /* HUD */
+  #hud{position:fixed;top:0;left:0;right:0;z-index:5;display:none;padding:10px 12px;
+    pointer-events:none;font-weight:bold;}
+  #hud.show{display:block;}
+  .hudbar{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;}
+  .chip{background:rgba(255,248,236,.92);border:3px solid var(--ink);border-radius:12px;
+    padding:6px 12px;font-size:15px;box-shadow:0 3px 0 rgba(0,0,0,.18);}
+  .chip b{color:var(--accent);}
+  .objective{margin:8px auto 0;max-width:max-content;background:rgba(34,49,63,.9);color:#fff;
+    border-radius:10px;padding:6px 14px;font-size:14px;}
+  .meter{height:10px;width:120px;background:#0003;border-radius:6px;overflow:hidden;margin-top:5px;}
+  .meter > i{display:block;height:100%;width:100%;background:var(--good);transition:width .1s;}
+  /* shop */
+  .shopitem{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    background:#fff;border:3px solid var(--ink);border-radius:12px;padding:10px 12px;margin:8px 0;text-align:left;}
+  .shopitem .lv{font-size:12px;opacity:.65;}
+  .buy{background:var(--good);color:#fff;border:none;border-radius:10px;padding:8px 14px;
+    font-weight:bold;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.2);font-family:inherit;}
+  .buy:disabled{background:#bbb;cursor:not-allowed;box-shadow:none;}
+  .summary-line{display:flex;justify-content:space-between;font-size:17px;padding:3px 4px;}
+  .summary-line.total{border-top:3px dashed var(--ink);margin-top:8px;padding-top:8px;font-size:22px;}
+  .stars{font-size:34px;letter-spacing:4px;color:var(--accent2);}
+  #toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:8;
+    background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-weight:bold;
+    opacity:0;transition:opacity .2s;pointer-events:none;font-size:15px;text-align:center;}
+  #toast.show{opacity:1;}
+  /* mobile controls */
+  #touch{position:fixed;inset:0;z-index:6;display:none;}
+  #touch.show{display:block;}
+  #stick{position:absolute;left:24px;bottom:24px;width:130px;height:130px;border-radius:50%;
+    background:rgba(255,255,255,.18);border:3px solid rgba(255,255,255,.5);touch-action:none;}
+  #nub{position:absolute;left:40px;top:40px;width:50px;height:50px;border-radius:50%;
+    background:rgba(255,255,255,.8);border:3px solid var(--ink);}
+  .tbtn{position:absolute;right:24px;width:84px;height:84px;border-radius:50%;color:#fff;
+    font-weight:bold;font-size:14px;display:flex;align-items:center;justify-content:center;
+    border:3px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.25);text-align:center;line-height:1.05;}
+  #btnBag{bottom:120px;background:var(--accent);}
+  #btnUntangle{bottom:24px;right:120px;background:var(--ink);}
+  .hint{font-size:13px;opacity:.7;margin-top:12px;line-height:1.5;}
+  .credits{font-size:12px;opacity:.55;margin-top:14px;}
+</style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hudbar">
+      <div class="chip">Level <b id="hLevel">1</b></div>
+      <div class="chip">💵 $<span id="hMoney">0</span></div>
+      <div class="chip">🛍️ Bags <b id="hBags">5</b></div>
+      <div class="chip">⏱️ <b id="hTime">60</b>s</div>
+      <div class="chip">Stamina
+        <div class="meter"><i id="hStam"></i></div>
+      </div>
+    </div>
+    <div class="objective" id="hObjective">Reach the 🏁 finish! Bag every 💩 before a Karen records you.</div>
+  </div>
+
+  <!-- Menu -->
+  <div id="menu" class="overlay">
+    <div class="panel">
+      <h1 class="logo">DOGWALKER</h1>
+      <p class="tag">Walk the dogs. Dodge the Karens. Don't get tangled.</p>
+      <div class="row">
+        <button class="btn go" id="btnPlay">▶ Play</button>
+        <button class="btn alt" id="btnShop">🛒 Shop</button>
+      </div>
+      <p class="hint">
+        <b>Move:</b> WASD / Arrows &nbsp;•&nbsp; <b>Bag poop:</b> E / Space<br>
+        <b>Untangle:</b> hold Shift &nbsp;•&nbsp; On phone: joystick + buttons<br>
+        Dogs pull toward squirrels &amp; mailmen — fight the chaos, scoop the poop,
+        and reach the finish flag before time runs out.
+      </p>
+      <p class="credits">Career cash: $<span id="mMoney">0</span> &nbsp;•&nbsp; <span id="mProgress">Level 1 unlocked</span></p>
+    </div>
+  </div>
+
+  <!-- Shop -->
+  <div id="shop" class="overlay">
+    <div class="panel">
+      <h1 class="logo" style="font-size:42px">🛒 Gear Shop</h1>
+      <p class="tag">Cash: $<span id="sMoney">0</span></p>
+      <div id="shopList"></div>
+      <button class="btn go" id="btnShopBack">Done</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div id="summary" class="overlay">
+    <div class="panel">
+      <h1 class="logo" id="sumTitle" style="font-size:46px">Nice Walk!</h1>
+      <div class="stars" id="sumStars">★ ★ ★</div>
+      <div id="sumLines" style="margin:14px 0;"></div>
+      <div class="row">
+        <button class="btn go" id="btnNext">Continue ▶</button>
+        <button class="btn alt" id="btnRetry">↻ Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- Mobile controls -->
+  <div id="touch">
+    <div id="stick"><div id="nub"></div></div>
+    <div class="tbtn" id="btnBag">BAG<br>💩</div>
+    <div class="tbtn" id="btnUntangle">UN-<br>TANGLE</div>
+  </div>
+
+  <script src="src/assets.js"></script>
+  <script src="src/input.js"></script>
+  <script src="src/levels.js"></script>
+  <script src="src/game.js"></script>
+</body>
+</html>
