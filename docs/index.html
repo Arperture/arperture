@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<title>GEO Audit — Artisan Plumbing Inc.</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#141821; --panel2:#1b212d; --line:#2a3342;
+    --ink:#eef2f8; --mut:#9aa7bd; --faint:#6b7689;
+    --grad:linear-gradient(135deg,#6ee7ff,#a78bfa 45%,#fb7185);
+    --a:#a78bfa; --cy:#6ee7ff; --pk:#fb7185;
+    --good:#34d399; --warn:#fbbf24; --bad:#f87171;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  a{color:var(--cy);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 80px}
+  /* header */
+  header{position:relative;overflow:hidden;border:1px solid var(--line);
+    border-radius:18px;padding:30px 30px 26px;margin-bottom:26px;
+    background:radial-gradient(120% 140% at 0% 0%,rgba(167,139,250,.18),transparent 55%),
+               radial-gradient(120% 140% at 100% 0%,rgba(110,231,255,.14),transparent 55%),var(--panel)}
+  .brand{font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--mut);font-weight:700}
+  .brand b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1{font-size:30px;line-height:1.15;margin:12px 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--mut);font-size:14px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:13px;color:var(--faint)}
+  .meta b{color:var(--ink);font-weight:600}
+  .gradeflag{position:absolute;top:26px;right:26px;text-align:center;
+    border:1px solid var(--line);border-radius:14px;padding:12px 18px;background:rgba(0,0,0,.25)}
+  .gradeflag .g{font-size:34px;font-weight:800;line-height:1;background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .gradeflag .l{font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;margin-top:6px}
+  /* tldr */
+  .tldr{border:1px solid var(--line);border-left:3px solid var(--a);border-radius:12px;
+    background:var(--panel);padding:18px 20px;margin-bottom:26px}
+  .tldr h2{margin:0 0 8px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--a)}
+  .tldr p{margin:0;color:#d4dcea}
+  /* sections */
+  section{margin:34px 0}
+  .shead{display:flex;align-items:baseline;gap:12px;margin:0 0 14px}
+  .shead .n{font-size:12px;font-weight:700;color:var(--faint);letter-spacing:.1em}
+  .shead h2{font-size:20px;margin:0;letter-spacing:-.01em}
+  .shead .hint{color:var(--faint);font-size:12.5px;margin-left:auto}
+  /* scorecard */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;position:relative}
+  .card .dim{font-size:13px;color:var(--mut);padding-right:42px}
+  .card .read{font-size:12.5px;color:#c2ccdb;margin-top:7px}
+  .pill{position:absolute;top:13px;right:13px;font-weight:800;font-size:15px;
+    width:34px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+  .A{color:var(--good);background:rgba(52,211,153,.12)}
+  .B{color:#7dd3a8;background:rgba(52,211,153,.10)}
+  .C{color:var(--warn);background:rgba(251,191,36,.12)}
+  .D{color:var(--bad);background:rgba(248,113,113,.13)}
+  .V{color:var(--cy);background:rgba(110,231,255,.10);font-size:11px;letter-spacing:.05em}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+  tr:last-child td{border-bottom:none}
+  .yes{color:var(--good);font-weight:700;white-space:nowrap}
+  .no{color:var(--bad);font-weight:700;white-space:nowrap}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);margin:1px 0}
+  .tag.ok{color:var(--good);border-color:rgba(52,211,153,.4)}
+  .tag.wr{color:var(--warn);border-color:rgba(251,191,36,.4)}
+  /* two-col */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}.gradeflag{display:none}}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .box h3{margin:0 0 10px;font-size:14px}
+  .box ul{margin:0;padding-left:18px;color:#c8d2e1}
+  .box li{margin:6px 0}
+  /* actions */
+  .progwrap{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+  .bar{flex:1;height:9px;background:var(--panel2);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;width:0;background:var(--grad);transition:width .35s ease}
+  .progtxt{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .resetbtn{font:inherit;font-size:12px;color:var(--mut);background:transparent;border:1px solid var(--line);
+    border-radius:8px;padding:5px 10px;cursor:pointer}
+  .resetbtn:hover{color:var(--ink);border-color:var(--faint)}
+  .group{margin:18px 0 8px;display:flex;align-items:center;gap:10px}
+  .group .lbl{font-weight:700;font-size:13px;letter-spacing:.04em}
+  .gp{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.08em}
+  .p0{color:var(--bad);background:rgba(248,113,113,.14)}
+  .p1{color:var(--warn);background:rgba(251,191,36,.14)}
+  .p2{color:var(--cy);background:rgba(110,231,255,.12)}
+  .group .when{margin-left:auto;font-size:11.5px;color:var(--faint)}
+  .task{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:11px 14px;margin:7px 0;cursor:pointer;transition:.15s}
+  .task:hover{border-color:var(--faint)}
+  .task input{appearance:none;-webkit-appearance:none;min-width:20px;height:20px;margin-top:1px;border:2px solid var(--faint);
+    border-radius:6px;cursor:pointer;position:relative;transition:.15s}
+  .task input:checked{background:var(--grad);border-color:transparent}
+  .task input:checked::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;font-size:13px;font-weight:900;color:#0b0d12}
+  .task .t{flex:1}
+  .task .t .ti{font-weight:600;font-size:14px}
+  .task .t .td{font-size:12.5px;color:var(--mut);margin-top:3px}
+  .task.done .t .ti{text-decoration:line-through;color:var(--faint)}
+  .task.done .t .td{opacity:.55}
+  .imp{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle}
+  .imp.hi{color:var(--bad);background:rgba(248,113,113,.12)}
+  .imp.md{color:var(--warn);background:rgba(251,191,36,.12)}
+  /* note + footer */
+  .note{font-size:12.5px;color:var(--faint);border:1px dashed var(--line);border-radius:10px;padding:12px 15px;margin-top:14px}
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--faint)}
+  .src{font-size:12px;color:var(--faint);line-height:1.9}
+  .legend{font-size:11.5px;color:var(--faint);margin-top:10px}
+  .legend b{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="gradeflag"><div class="g">C–</div><div class="l">GEO Health</div></div>
+    <div class="brand"><b>ARPERTURE</b> · GENERATIVE ENGINE OPTIMIZATION AUDIT</div>
+    <h1>Artisan Plumbing Inc.</h1>
+    <div class="sub">AI answer-engine visibility audit — Leesburg / Loudoun County, Northern VA</div>
+    <div class="meta">
+      <span>Website <b>artisanplumbinginc.com</b></span>
+      <span>Date <b>June 20, 2026</b></span>
+      <span>Engines tested <b>ChatGPT · Perplexity · Google AI Overviews</b></span>
+    </div>
+  </header>
+
+  <div class="tldr">
+    <h2>Bottom line</h2>
+    <p>AI engines <b>know Artisan is well-respected</b> — you own branded and “best plumber in Loudoun”
+    answers thanks to Best of Loudoun &amp; NoVA Magazine. But on the
+    <b>service-intent and emergency queries that actually generate calls</b> (water heater, well pump,
+    drain/sewer, “emergency plumber near me”) and broad “Northern VA plumber” queries, <b>Artisan is invisible</b>
+    while competitors with thinner reputations get named. The gap is fixable — and it’s where the revenue is.</p>
+  </div>
+
+  <!-- SCORECARD -->
+  <section>
+    <div class="shead"><span class="n">01</span><h2>Visibility Scorecard</h2><span class="hint">graded by dimension</span></div>
+    <div class="cards">
+      <div class="card"><div class="pill A">A</div><div class="dim">Branded queries</div><div class="read">Surfaces accurately, well-framed</div></div>
+      <div class="card"><div class="pill B">B+</div><div class="dim">“Best plumber in Loudoun”</div><div class="read">Named &amp; praised; awards carry you</div></div>
+      <div class="card"><div class="pill D">D</div><div class="dim">Broad “Northern VA plumber”</div><div class="read">Invisible; competitors own it</div></div>
+      <div class="card"><div class="pill D">D</div><div class="dim">Service-intent queries</div><div class="read">Invisible despite offering it all</div></div>
+      <div class="card"><div class="pill D">D</div><div class="dim">Emergency-intent</div><div class="read">Invisible; highest-conversion moment</div></div>
+      <div class="card"><div class="pill C">C</div><div class="dim">Review / rating signals</div><div class="read">Good Yelp/Angi; thin Google + BBB drag</div></div>
+      <div class="card"><div class="pill C">C–</div><div class="dim">Entity / NAP consistency</div><div class="read">Inc vs LLC; 3 cities confuse engines</div></div>
+      <div class="card"><div class="pill V">VERIFY</div><div class="dim">On-page AI-readiness</div><div class="read">Schema/FAQ/llms.txt — confirm via crawl</div></div>
+    </div>
+    <div class="legend"><b>Scale:</b> A = owns the answer · B = present &amp; positive · C = mixed · D = absent/losing · VERIFY = needs live crawl</div>
+  </section>
+
+  <!-- VISIBILITY -->
+  <section>
+    <div class="shead"><span class="n">02</span><h2>Query-by-Query Visibility</h2><span class="hint">the revenue gap</span></div>
+    <table>
+      <thead><tr><th>Customer query (simulated)</th><th>Artisan shown?</th><th>Who the AI recommended instead</th></tr></thead>
+      <tbody>
+        <tr><td>“Artisan Plumbing” (branded)</td><td class="yes">✅ Yes</td><td>Accurate, flattering framing</td></tr>
+        <tr><td>“best plumber in <b>Loudoun County</b>”</td><td class="yes">✅ Yes</td><td>Named &amp; praised (“appears to stand out”)</td></tr>
+        <tr><td>“best plumber <b>Northern VA</b> / Fairfax / Arlington”</td><td class="no">❌ No</td><td>Pioneer, Len The Plumber, Morgan, DB’s</td></tr>
+        <tr><td>“<b>emergency</b> plumber near Leesburg, water heater repair”</td><td class="no">❌ No</td><td>Len, Roto-Rooter, Stoney’s, Priority 1, Falcon</td></tr>
+        <tr><td>“licensed plumber Purcellville/Ashburn, <b>well pump</b> repair”</td><td class="no">❌ No</td><td>Plumb Crazy, Veteran Plumbing, Tri-County, Casco</td></tr>
+        <tr><td>“<b>drain cleaning / sewer line</b> repair Loudoun County”</td><td class="no">❌ No</td><td>Len, Crown, Stoney’s, Priority 1</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Why:</b> engines assemble service recommendations from pages that tightly match <i>service + location</i> intent
+    (e.g. “Water Heater Repair in Leesburg, VA”). Competitors built dense service-by-city page networks + carry far more reviews,
+    so engines have clean, citable matches. Artisan offers every one of these services — but the content isn’t structured/cited for extraction.</div>
+  </section>
+
+  <!-- CITATIONS + NAP -->
+  <section>
+    <div class="shead"><span class="n">03</span><h2>Citation &amp; Review Footprint</h2><span class="hint">what AI grounds answers in</span></div>
+    <div class="grid2">
+      <table style="grid-column:1/-1">
+        <thead><tr><th>Source</th><th>Status</th><th>GEO impact</th></tr></thead>
+        <tbody>
+          <tr><td>Northern Virginia Magazine (2026 winner)</td><td><span class="tag ok">Strong</span></td><td>High-authority, AI loves to cite — <b>leverage more</b></td></tr>
+          <tr><td>Best of Loudoun (multi-year)</td><td><span class="tag ok">Strong</span></td><td>Repeatedly surfaced by engines</td></tr>
+          <tr><td>Yelp</td><td><span class="tag ok">4.4★ / ~36</span></td><td>Solid, frequently cited</td></tr>
+          <tr><td>Angi</td><td><span class="tag ok">5.0</span></td><td>Strong; lower citation weight</td></tr>
+          <tr><td>Google Business Profile</td><td><span class="tag wr">~29 reviews</span></td><td><b>Too thin</b> — #1 lever for AI Overviews + Maps</td></tr>
+          <tr><td>BBB</td><td><span class="tag wr">B–, not accredited</span></td><td><b>Reputational drag</b> an AI may surface — fix it</td></tr>
+          <tr><td>Nextdoor / Chamber / FB / YP / Manta</td><td><span class="tag ok">Present</span></td><td>Citation breadth is fine</td></tr>
+        </tbody>
+      </table>
+      <div class="box">
+        <h3>⚠️ Biggest review lever — Google</h3>
+        <ul>
+          <li>~29 Google reviews is low for a 20-yr award-winning firm; competitors carry hundreds.</li>
+          <li>AI Overviews &amp; Maps weight Google <b>volume + recency</b> heavily.</li>
+          <li>Closing this one gap materially lifts discovery-query visibility.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>⚠️ Entity / NAP consistency</h3>
+        <ul>
+          <li><b>Name:</b> “Artisan Plumbing <i>Inc.</i>” vs “<i>LLC</i>” (Manta) vs “Artisan Plumbing”.</li>
+          <li><b>City:</b> Leesburg vs Purcellville (Alignable) vs Stephens City (BBB, YP).</li>
+          <li>Fragmentation splits authority across half-entities &amp; weakens every query.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPETITORS -->
+  <section>
+    <div class="shead"><span class="n">04</span><h2>Competitor Benchmark</h2><span class="hint">who’s beating you inside the answers</span></div>
+    <table>
+      <thead><tr><th>Competitor</th><th>Why the AI keeps naming them</th></tr></thead>
+      <tbody>
+        <tr><td><b>Len The Plumber</b></td><td>Dense service×city pages; 24/7; huge review volume; quotable “serves 60,000 families/yr” stat</td></tr>
+        <tr><td><b>Crown Plumber</b></td><td>Dedicated sewer-line / service pages; same-day; “free estimates” phrasing</td></tr>
+        <tr><td><b>Stoney’s Plumbing</b></td><td>Veteran-owned + master-plumber story; warranty; strong local reviews</td></tr>
+        <tr><td><b>Priority 1 / Plumb Crazy / Veteran Plumbing</b></td><td>Hyper-local pages naming every town; well-pump + sewer specificity</td></tr>
+        <tr><td><b>Roto-Rooter</b></td><td>Brand authority + 24/7 + national citation weight</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>The pattern:</b> they win on <i>structured, service-specific, town-named content + review volume</i>.
+    Artisan wins on <i>reputation</i>. Combine your trust signals (NoVA Mag, Best of Loudoun — which they lack) with their content structure and you out-rank all of them.</div>
+  </section>
+
+  <!-- ACTION LIST -->
+  <section>
+    <div class="shead"><span class="n">05</span><h2>Action List</h2><span class="hint">check items off — progress saves automatically</span></div>
+    <div class="progwrap">
+      <div class="bar"><i id="barfill"></i></div>
+      <span class="progtxt" id="progtxt">0 / 10 complete</span>
+      <button class="resetbtn" id="resetbtn">Reset</button>
+    </div>
+
+    <div class="group"><span class="gp p0">P0</span><span class="lbl">Do in the next 30 days</span><span class="when">high impact · low effort</span></div>
+    <label class="task"><input type="checkbox" data-k="t1"><span class="t"><span class="ti">Fix NAP / entity consistency <span class="imp hi">HIGH</span></span><span class="td">Lock one legal name, one address, one phone. Correct BBB, Manta, Alignable, Yelp, chambers, GBP &amp; site footer.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t2"><span class="t"><span class="ti">Google review push: ~29 → 100+ <span class="imp hi">HIGH</span></span><span class="td">Post-job text/email ask. Single biggest lever for discovery-query visibility.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t3"><span class="t"><span class="ti">Address the BBB B– <span class="imp md">MED</span></span><span class="td">Respond to the open complaint; pursue accreditation / rating bump so AI has nothing negative to quote.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t4"><span class="t"><span class="ti">Publish <code>/llms.txt</code> <span class="imp md">MED</span></span><span class="td">Canonical brief: services, towns, hours, USPs, awards, contact — a single source engines can quote.</span></span></label>
+
+    <div class="group"><span class="gp p1">P1</span><span class="lbl">Next 60–90 days</span><span class="when">high impact · moderate effort</span></div>
+    <label class="task"><input type="checkbox" data-k="t5"><span class="t"><span class="ti">Build the service × city page matrix <span class="imp hi">HIGH</span></span><span class="td">One page per core service (water heater, drain, well pump, sewer/locating, leak detection, emergency) × each served town. Title + H1 = “Service in City, VA.”</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t6"><span class="t"><span class="ti">Add an FAQ hub <span class="imp md">MED</span></span><span class="td">Question-shaped headings + concise answers (“cost of water heater replacement in Loudoun?”, “signs of a failing well pump”). Mark up with FAQPage schema.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t7"><span class="t"><span class="ti">Deploy LocalBusiness/Plumber + Service + AggregateRating JSON-LD <span class="imp md">MED</span></span><span class="td">Hand engines clean, citable structured facts sitewide.</span></span></label>
+
+    <div class="group"><span class="gp p2">P2</span><span class="lbl">Ongoing &amp; compounding</span><span class="when">keeps the lead</span></div>
+    <label class="task"><input type="checkbox" data-k="t8"><span class="t"><span class="ti">Leverage awards on-page</span><span class="td">A dedicated “Awards &amp; Recognition” page citing NoVA Mag 2026, Best of Loudoun (each year), Chamber — authoritative anchors for AI to cite.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t9"><span class="t"><span class="ti">Light content cadence</span><span class="td">Short helpful posts on common Loudoun problems (hard water, well systems, winter pipe burst) to feed engines fresh Q&amp;A.</span></span></label>
+    <label class="task"><input type="checkbox" data-k="t10"><span class="t"><span class="ti">Re-audit quarterly</span><span class="td">Re-run the query set to track movement from “D” → “B+” on service/emergency intent.</span></span></label>
+
+    <div class="note"><b>30-day quick-win bundle:</b> Fix NAP → push Google reviews → resolve BBB → ship <code>llms.txt</code> + schema →
+    stand up the top 3 service×city pages (water heater, drain/sewer, well pump for Leesburg + Purcellville + Ashburn).
+    That alone should start putting Artisan into the service-intent answers where the money is.</div>
+  </section>
+
+  <!-- VERIFY -->
+  <section>
+    <div class="shead"><span class="n">06</span><h2>On-Page AI-Readiness</h2><span class="hint">verify with a live crawl</span></div>
+    <div class="box">
+      <ul>
+        <li><b>Structured data:</b> confirm Plumber/LocalBusiness, Service, FAQPage, Review/AggregateRating JSON-LD.</li>
+        <li><b>FAQ content:</b> no dedicated FAQ/blog surfaced — prime AI-answer fuel that’s currently missing.</li>
+        <li><b>Service-by-city depth:</b> strengthen pages for each service × town (Leesburg, Ashburn, Sterling, Purcellville, Hamilton, Lovettsville, South Riding, Aldie, Herndon, Winchester, Berryville, Charles Town).</li>
+        <li><b>robots.txt:</b> confirm GPTBot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended are <i>not</i> blocked.</li>
+        <li><b>Titles / H1s:</b> explicitly combine service + city.</li>
+      </ul>
+      <div class="note" style="margin-top:12px">Direct crawling was blocked by our audit environment’s egress policy (not a site issue).
+      Visibility, citation &amp; review findings are firm; the items above need a live crawl / Search Console to confirm.</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="src">
+      <b style="color:var(--mut)">Key sources:</b>
+      <a href="https://artisanplumbinginc.com/" target="_blank" rel="noopener">artisanplumbinginc.com</a> ·
+      <a href="https://northernvirginiamag.com/best/home-experts/artisan-plumbing/" target="_blank" rel="noopener">NoVA Magazine</a> ·
+      <a href="https://www.yelp.com/biz/artisan-plumbing-leesburg-3" target="_blank" rel="noopener">Yelp</a> ·
+      <a href="https://www.angi.com/companylist/us/va/leesburg/artisan-plumbing-inc-reviews-6786189.htm" target="_blank" rel="noopener">Angi</a> ·
+      <a href="https://www.bbb.org/us/va/stephens-city/profile/plumber/artisan-plumbing-inc-0241-236010359" target="_blank" rel="noopener">BBB</a> ·
+      <a href="https://business.loudounchamber.org/list/member/artisan-plumbing-inc-leesburg-28624" target="_blank" rel="noopener">Loudoun Chamber</a> ·
+      <a href="https://nextdoor.com/pages/artisan-plumbing-leesburg-va/" target="_blank" rel="noopener">Nextdoor</a>
+    </div>
+    <p style="margin-top:14px">Prepared by <b style="color:var(--mut)">Arperture</b>. GEO findings reflect live answer-engine behavior as of June 2026;
+    engines update continuously, so re-audit quarterly. Items marked <b style="color:var(--cy)">VERIFY</b> require a live crawl / Search Console.</p>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var KEY="artisan-geo-actions-v1";
+    var boxes=[].slice.call(document.querySelectorAll(".task input"));
+    var fill=document.getElementById("barfill");
+    var txt=document.getElementById("progtxt");
+    var saved={};
+    try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){saved={}}
+
+    function render(){
+      var done=0;
+      boxes.forEach(function(b){
+        if(b.checked)done++;
+        b.closest(".task").classList.toggle("done",b.checked);
+      });
+      var pct=boxes.length?Math.round(done/boxes.length*100):0;
+      fill.style.width=pct+"%";
+      txt.textContent=done+" / "+boxes.length+" complete";
+    }
+    boxes.forEach(function(b){
+      var k=b.getAttribute("data-k");
+      if(saved[k])b.checked=true;
+      b.addEventListener("change",function(){
+        saved[k]=b.checked;
+        try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}
+        render();
+      });
+    });
+    document.getElementById("resetbtn").addEventListener("click",function(){
+      saved={};try{localStorage.removeItem(KEY)}catch(e){}
+      boxes.forEach(function(b){b.checked=false});
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>
