@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Audit — Yield Bookkeeping Services</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a30; --panel2:#0f1729; --line:#23304f;
+    --txt:#e7ecf6; --muted:#9aa8c7; --brand:#5b8cff; --brand2:#7c5cff;
+    --good:#27c499; --warn:#f6b545; --bad:#ff5c70; --crit:#ff3b5c;
+    --chip:#1b2540;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:radial-gradient(1200px 600px at 80% -10%,#1a2547 0%,var(--bg) 55%);
+    color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+  header.top{
+    display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;
+    padding:26px 28px;border:1px solid var(--line);border-radius:18px;
+    background:linear-gradient(135deg,#16203c,#0e1730);box-shadow:var(--shadow);
+  }
+  .brandrow{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:50px;height:50px;border-radius:13px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));
+    display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;
+    box-shadow:0 6px 18px rgba(91,140,255,.45)
+  }
+  h1{font-size:24px;margin:0;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .meta{text-align:right;font-size:12.5px;color:var(--muted)}
+  .meta b{color:var(--txt)}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid var(--line);background:var(--chip)}
+
+  .grid{display:grid;gap:18px;margin-top:18px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:1.2fr .8fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.g3,.g2,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+  .card h2{font-size:15px;margin:0 0 4px;letter-spacing:.3px;text-transform:uppercase;color:var(--muted)}
+  .card h2 .n{color:var(--txt)}
+  .lead{font-size:13.5px;color:var(--muted);margin:2px 0 16px}
+
+  /* score gauge */
+  .scorewrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .gauge{position:relative;width:190px;height:190px;flex:0 0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .ctr{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .gauge .ctr .big{font-size:46px;font-weight:800;line-height:1}
+  .gauge .ctr .lab{font-size:12px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+  .grade{font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;display:inline-block;margin-top:8px}
+  .verdict{flex:1;min-width:240px}
+  .verdict p{margin:.4em 0;font-size:14px;color:#cdd7ef}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:14px}
+  .kpi .v{font-size:24px;font-weight:800}
+  .kpi .l{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+
+  /* category bars */
+  .bars{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+  .bar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+  .bar .top .w{color:var(--muted);font-size:11.5px}
+  .track{height:11px;background:#0c1426;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;border-radius:7px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+  .t-yes{background:rgba(39,196,153,.16);color:#5fe3c0;border:1px solid rgba(39,196,153,.35)}
+  .t-no{background:rgba(255,59,92,.14);color:#ff8497;border:1px solid rgba(255,59,92,.35)}
+  .t-part{background:rgba(246,181,69,.14);color:#ffcf7a;border:1px solid rgba(246,181,69,.35)}
+
+  .sevdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+  .findlist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+  .find{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:13px 15px;background:var(--panel2)}
+  .find h4{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .find p{margin:0;font-size:13px;color:#c4cee6}
+  .find .why{margin-top:6px;font-size:12px;color:var(--muted)}
+  .s-crit{border-left-color:var(--crit)} .s-high{border-left-color:var(--bad)}
+  .s-med{border-left-color:var(--warn)} .s-low{border-left-color:var(--brand)}
+  .badge{font-size:10.5px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:6px;text-transform:uppercase}
+  .b-crit{background:rgba(255,59,92,.18);color:#ff8497}
+  .b-high{background:rgba(255,92,112,.16);color:#ff9aa8}
+  .b-med{background:rgba(246,181,69,.16);color:#ffcf7a}
+  .b-low{background:rgba(91,140,255,.16);color:#9cb8ff}
+
+  /* action board */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:900px){.board{grid-template-columns:1fr}}
+  .lane{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:14px}
+  .lane h3{margin:0 0 4px;font-size:13px;display:flex;align-items:center;gap:8px}
+  .lane .hint{font-size:11px;color:var(--muted);margin-bottom:10px}
+  .act{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:10px;background:var(--panel)}
+  .act:last-child{margin-bottom:0}
+  .act .t{font-size:13px;font-weight:700;margin-bottom:3px}
+  .act .d{font-size:12px;color:var(--muted)}
+  .act .m{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .mini{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--chip);color:var(--muted);border:1px solid var(--line)}
+  .mini.imp{color:#5fe3c0} .mini.eff{color:#ffcf7a}
+
+  .pres{display:flex;flex-wrap:wrap;gap:8px}
+  .pchip{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:9px;font-size:12.5px;border:1px solid var(--line);background:var(--panel2)}
+  .pchip .d{width:8px;height:8px;border-radius:50%}
+
+  .sov{display:flex;flex-direction:column;gap:10px}
+  .sovrow{display:flex;align-items:center;gap:10px;font-size:13px}
+  .sovrow .name{width:160px;flex:0 0 auto;color:#cdd7ef}
+  .sovrow .name.me{color:#fff;font-weight:700}
+  .sovtrack{flex:1;height:18px;background:#0c1426;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+  .sovfill{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:7px;font-size:11px;font-weight:700;color:#04121d}
+
+  footer{margin-top:34px;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .note{font-size:11.5px;color:var(--muted);background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:11px 13px;margin-top:14px}
+  h2.section{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:34px 4px 2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brandrow">
+      <div class="logo">Y</div>
+      <div>
+        <h1>GEO Audit — Yield Bookkeeping Services, LLC</h1>
+        <div class="sub">Generative Engine Optimization · yieldbookkeeping.com · Brambleton / Leesburg / Ashburn, VA</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div><span class="pill">Audit date: 20 Jun 2026</span></div>
+      <div style="margin-top:8px">Prepared by <b>Arperture</b></div>
+      <div>Engines tested: <b>ChatGPT-style search, Perplexity, Google AI Overviews, Gemini</b></div>
+    </div>
+  </header>
+
+  <!-- SCORE + VERDICT -->
+  <div class="grid g2">
+    <div class="card">
+      <h2>Overall <span class="n">GEO Readiness Score</span></h2>
+      <div class="lead">Weighted composite across six pillars that drive whether AI answer engines can find, trust, and cite you.</div>
+      <div class="scorewrap">
+        <div class="gauge">
+          <svg width="190" height="190" viewBox="0 0 190 190">
+            <circle cx="95" cy="95" r="82" fill="none" stroke="#0c1426" stroke-width="16"/>
+            <circle cx="95" cy="95" r="82" fill="none" stroke="url(#gg)" stroke-width="16"
+              stroke-linecap="round" stroke-dasharray="515.2" stroke-dashoffset="221.5"/>
+            <defs>
+              <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff5c70"/><stop offset="1" stop-color="#f6b545"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="ctr">
+            <div>
+              <div class="big">43</div>
+              <div class="lab">/ 100</div>
+              <div class="grade" style="background:rgba(246,181,69,.16);color:#ffcf7a">GRADE D · NEEDS WORK</div>
+            </div>
+          </div>
+        </div>
+        <div class="verdict">
+          <p><b>Headline:</b> Yield wins <b>branded &amp; hyper-local</b> AI answers (e.g. "best bookkeeper in Loudoun County") but is <b>invisible on high-value, non-branded</b> queries ("best remote bookkeeping for small business") — where competitors are cited instead.</p>
+          <p><b>Root cause:</b> the website returns <b>HTTP&nbsp;403 to non-browser agents</b>, which blocks (or risks blocking) AI crawlers like GPTBot, ClaudeBot &amp; PerplexityBot. Engines therefore cite <b>third-party directories</b> about Yield rather than Yield's own pages.</p>
+          <p><b>The good news:</b> strong off-site footprint and a 6-year award record give a high-authority base to build on. Fix crawl access + add answer-ready content and visibility can climb fast.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Snapshot <span class="n">KPIs</span></h2>
+      <div class="lead">At-a-glance signals from the live tests.</div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" style="color:var(--good)">5/5</div><div class="l">Branded / local prompts where Yield appears</div></div>
+        <div class="kpi"><div class="v" style="color:var(--bad)">1/4</div><div class="l">Non-branded commercial prompts where Yield appears</div></div>
+        <div class="kpi"><div class="v" style="color:var(--crit)">403</div><div class="l">HTTP status returned to non-browser crawlers</div></div>
+        <div class="kpi"><div class="v" style="color:var(--good)">12+</div><div class="l">Authoritative off-site citations / listings</div></div>
+        <div class="kpi"><div class="v" style="color:var(--warn)">3</div><div class="l">Conflicting city names in listings (NAP)</div></div>
+        <div class="kpi"><div class="v" style="color:var(--good)">6 yrs</div><div class="l">Consecutive "Best Bookkeeper" awards (2018–23)</div></div>
+        <div class="kpi"><div class="v" style="color:var(--bad)">No</div><div class="l">BBB accreditation / detectable FAQ schema</div></div>
+        <div class="kpi"><div class="v" style="color:var(--warn)">?</div><div class="l">llms.txt / sitemap reachable (blocked by 403)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILLAR SCORES -->
+  <div class="grid g2">
+    <div class="card">
+      <h2>Pillar <span class="n">Scores</span></h2>
+      <div class="lead">Six weighted dimensions of generative-engine readiness.</div>
+      <div class="bars">
+        <div class="bar"><div class="top"><span>🤖 AI Crawler Accessibility</span><span class="w">weight 25% · <b style="color:var(--crit)">20/100</b></span></div><div class="track"><div class="fill" style="width:20%;background:linear-gradient(90deg,#ff3b5c,#ff5c70)"></div></div></div>
+        <div class="bar"><div class="top"><span>🔎 Generative Visibility / Share of Voice</span><span class="w">weight 25% · <b style="color:var(--warn)">40/100</b></span></div><div class="track"><div class="fill" style="width:40%;background:linear-gradient(90deg,#ff5c70,#f6b545)"></div></div></div>
+        <div class="bar"><div class="top"><span>🧱 Structured Data &amp; Answer-Readiness</span><span class="w">weight 15% · <b style="color:var(--warn)">35/100</b></span></div><div class="track"><div class="fill" style="width:35%;background:linear-gradient(90deg,#ff5c70,#f6b545)"></div></div></div>
+        <div class="bar"><div class="top"><span>📍 Entity &amp; NAP Consistency</span><span class="w">weight 10% · <b style="color:var(--warn)">55/100</b></span></div><div class="track"><div class="fill" style="width:55%;background:linear-gradient(90deg,#f6b545,#ffd27a)"></div></div></div>
+        <div class="bar"><div class="top"><span>🔗 Off-site Citations &amp; Authority</span><span class="w">weight 15% · <b style="color:var(--good)">75/100</b></span></div><div class="track"><div class="fill" style="width:75%;background:linear-gradient(90deg,#27c499,#5fe3c0)"></div></div></div>
+        <div class="bar"><div class="top"><span>⭐ E-E-A-T &amp; Reviews</span><span class="w">weight 10% · <b style="color:#ffcf7a">60/100</b></span></div><div class="track"><div class="fill" style="width:60%;background:linear-gradient(90deg,#f6b545,#27c499)"></div></div></div>
+      </div>
+      <div class="legend">
+        <span><span class="sevdot" style="background:var(--crit)"></span>0–39 Critical</span>
+        <span><span class="sevdot" style="background:var(--warn)"></span>40–69 Needs work</span>
+        <span><span class="sevdot" style="background:var(--good)"></span>70–100 Strong</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Share of Voice <span class="n">— non-branded prompt</span></h2>
+      <div class="lead">"Best remote / outsourced bookkeeping for small businesses in Virginia" — who AI engines name first.</div>
+      <div class="sov">
+        <div class="sovrow"><span class="name">Remote Books Online</span><div class="sovtrack"><div class="sovfill" style="width:88%;background:linear-gradient(90deg,#5b8cff,#7c5cff)">cited first</div></div></div>
+        <div class="sovrow"><span class="name">Brasfield Accounting</span><div class="sovtrack"><div class="sovfill" style="width:40%;background:#3a4a76">named</div></div></div>
+        <div class="sovrow"><span class="name">MAVENTRI / ClienTax</span><div class="sovtrack"><div class="sovfill" style="width:34%;background:#3a4a76">named</div></div></div>
+        <div class="sovrow"><span class="name me">Yield Bookkeeping</span><div class="sovtrack"><div class="sovfill" style="width:6%;background:var(--crit)">absent</div></div></div>
+      </div>
+      <div class="note">On the <b>local branded</b> prompt ("best bookkeepers in Loudoun County"), the picture flips — Yield is named <b>first</b>, cited via LoudounNow, Yelp &amp; awards directories. The opportunity is to convert that local authority into <b>non-branded, nationwide</b> answer share.</div>
+    </div>
+  </div>
+
+  <!-- VISIBILITY TEST MATRIX -->
+  <h2 class="section">① Generative Visibility — Prompt Test Results</h2>
+  <div class="card">
+    <div class="lead">Real prompts a prospect would type into an AI engine, and whether Yield surfaced. This is the ground truth of GEO performance.</div>
+    <table>
+      <thead><tr><th>Prompt tested</th><th>Intent</th><th>Yield cited?</th><th>What AI returned instead / why</th></tr></thead>
+      <tbody>
+        <tr><td>"Best bookkeepers in Loudoun County / Brambleton VA"</td><td>Local · branded-adjacent</td><td><span class="tag t-yes">YES — 1st</span></td><td>Surfaced via LoudounNow "Favorite", Yelp, awards pages. Strongest result.</td></tr>
+        <tr><td>"Yield Bookkeeping Services reviews"</td><td>Branded</td><td><span class="tag t-yes">YES</span></td><td>Pulled from LinkedIn, BBB, Yelp, Quality Business Awards.</td></tr>
+        <tr><td>"Remote bookkeeping for small business in Virginia"</td><td>Commercial · non-branded</td><td><span class="tag t-no">NO</span></td><td>Remote Books Online dominates (content-rich, crawlable location pages).</td></tr>
+        <tr><td>"Best outsourced bookkeeping for startups / nonprofits"</td><td>Commercial · non-branded</td><td><span class="tag t-no">NO</span></td><td>National players cited; Yield's nonprofit/startup focus not discoverable by crawlers.</td></tr>
+        <tr><td>"QuickBooks bookkeeper near Ashburn VA"</td><td>Local · service</td><td><span class="tag t-part">PARTIAL</span></td><td>Appears in directory lists but not as a primary AI recommendation.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FINDINGS -->
+  <h2 class="section">② Findings by Severity</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h2>Critical &amp; High</h2>
+      <ul class="findlist">
+        <li class="find s-crit">
+          <h4><span class="badge b-crit">Critical</span> AI crawlers are blocked at the door</h4>
+          <p>The homepage returns <b>HTTP 403 Forbidden</b> to any non-browser user-agent (confirmed via multiple fetchers). A security plugin / WAF is filtering by user-agent, which commonly also blocks GPTBot, ClaudeBot, PerplexityBot, Google-Extended and CCBot.</p>
+          <p class="why">Impact: AI engines can't read your pages, so they cite directories <i>about</i> you instead of <i>you</i> — and never quote your services, pricing, or differentiators directly.</p>
+        </li>
+        <li class="find s-crit">
+          <h4><span class="badge b-crit">Critical</span> Zero share-of-voice on non-branded commercial queries</h4>
+          <p>For the highest-value prompts ("best remote bookkeeping for small business"), Yield does not appear at all. These are the prompts that win <b>new, non-local</b> clients — exactly the nationwide audience Yield markets to.</p>
+          <p class="why">Impact: competitors with crawlable, content-rich location/topic pages capture the AI recommendation by default.</p>
+        </li>
+        <li class="find s-high">
+          <h4><span class="badge b-high">High</span> No detectable answer-ready / structured content</h4>
+          <p>No FAQ schema, comparison pages, or quotable statistics could be detected (and can't be verified while the site blocks crawlers). Generative engines preferentially quote concise, structured, fact-dense passages.</p>
+          <p class="why">Impact: even once crawlable, thin/un-structured pages are less likely to be extracted into answers.</p>
+        </li>
+        <li class="find s-high">
+          <h4><span class="badge b-high">High</span> No <code>llms.txt</code> / unverifiable sitemap</h4>
+          <p>An <code>llms.txt</code> guide for AI agents is absent, and <code>sitemap.xml</code> / <code>robots.txt</code> could not be confirmed (403). Engines lack a clean map of what to read.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Medium &amp; Strengths</h2>
+      <ul class="findlist">
+        <li class="find s-med">
+          <h4><span class="badge b-med">Medium</span> NAP / location inconsistency</h4>
+          <p>Listings name the city as <b>Brambleton</b>, <b>Leesburg</b>, and <b>Ashburn</b> interchangeably (ZIP 20148). Inconsistent Name-Address-Phone weakens the entity AI builds about you.</p>
+          <p class="why">Fix: pick one canonical address + phone and make every profile match it exactly.</p>
+        </li>
+        <li class="find s-med">
+          <h4><span class="badge b-med">Medium</span> Not BBB-accredited; one prominent negative review</h4>
+          <p>Listed but unaccredited on BBB; a public review from an "$8M+ company" cites unmet scope. AI engines surface sentiment in answers.</p>
+          <p class="why">Fix: pursue accreditation + respond publicly to reviews to shape the narrative engines read.</p>
+        </li>
+        <li class="find s-low">
+          <h4><span class="badge b-low">Strength</span> Deep, authoritative off-site footprint</h4>
+          <p>Present on LinkedIn, Facebook, Instagram, Yelp, BBB, Nextdoor, Alignable, Crunchbase, ZoomInfo, Loudoun Chamber, Yahoo Local &amp; awards sites — the citation graph engines trust.</p>
+        </li>
+        <li class="find s-low">
+          <h4><span class="badge b-low">Strength</span> Award &amp; founder authority (E-E-A-T)</h4>
+          <p>Founder <b>Rochelle Dallons</b> (est. 2013); "Best Bookkeeper" 6 years running (Loudoun Times-Mirror), LoudounNow Favorite, Best of Brambleton 2024, Top-5 Women-Owned. Strong trust signals to amplify.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ACTION BOARD -->
+  <h2 class="section">③ Actionable Roadmap (prioritised by impact × effort)</h2>
+  <div class="card">
+    <div class="lead">Work top-to-bottom. The "Now" lane removes the blockers stopping AI engines from citing you at all.</div>
+    <div class="board">
+      <div class="lane">
+        <h3>🚑 Now — Weeks 1–2</h3>
+        <div class="hint">Unblock crawlers &amp; reclaim the basics</div>
+
+        <div class="act">
+          <div class="t">Allow AI crawler user-agents</div>
+          <div class="d">Whitelist GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended &amp; CCBot in the WAF/security plugin. Remove the blanket 403 on non-browser agents. Verify a 200 response.</div>
+          <div class="m"><span class="mini imp">Impact: Critical</span><span class="mini eff">Effort: Low</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Publish robots.txt + XML sitemap (publicly fetchable)</div>
+          <div class="d">Explicitly <code>Allow</code> the AI bots, link the sitemap, and confirm both return 200 to a plain fetch.</div>
+          <div class="m"><span class="mini imp">Impact: High</span><span class="mini eff">Effort: Low</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Standardise NAP everywhere</div>
+          <div class="d">One canonical business name, address (single city), phone (571) 249-4316. Update Google Business Profile, Yelp, BBB, LinkedIn, Facebook, chamber + data aggregators.</div>
+          <div class="m"><span class="mini imp">Impact: Med</span><span class="mini eff">Effort: Med</span></div>
+        </div>
+      </div>
+
+      <div class="lane">
+        <h3>🏗️ Next — Weeks 3–8</h3>
+        <div class="hint">Make pages answer-ready</div>
+
+        <div class="act">
+          <div class="t">Add structured data (Schema.org JSON-LD)</div>
+          <div class="d"><code>LocalBusiness</code>/<code>AccountingService</code>, <code>FAQPage</code>, <code>Review</code>/<code>AggregateRating</code>, and <code>Person</code> for the founder. Gives engines clean, quotable facts.</div>
+          <div class="m"><span class="mini imp">Impact: High</span><span class="mini eff">Effort: Med</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Build an FAQ + "How bookkeeping works" hub</div>
+          <div class="d">Concise Q&amp;A blocks: pricing model, onboarding, QuickBooks vs Xero, nonprofit &amp; startup specifics. Lead each answer with the direct fact engines love to extract.</div>
+          <div class="m"><span class="mini imp">Impact: High</span><span class="mini eff">Effort: Med</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Publish an <code>llms.txt</code></div>
+          <div class="d">Root-level guide pointing AI agents to your services, pricing, FAQ &amp; contact pages with one-line summaries.</div>
+          <div class="m"><span class="mini imp">Impact: Med</span><span class="mini eff">Effort: Low</span></div>
+        </div>
+      </div>
+
+      <div class="lane">
+        <h3>📈 Then — Months 2–4</h3>
+        <div class="hint">Win non-branded share of voice</div>
+
+        <div class="act">
+          <div class="t">Create commercial-intent landing pages</div>
+          <div class="d">"Remote bookkeeping for small business," "Bookkeeping for nonprofits," "Bookkeeping for startups/restaurants" — the exact non-branded prompts you currently lose. Fact-dense, comparison-friendly.</div>
+          <div class="m"><span class="mini imp">Impact: High</span><span class="mini eff">Effort: High</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Earn third-party "best of" mentions</div>
+          <div class="d">Get listed/quoted in roundup articles &amp; directories engines cite (e.g. industry "best bookkeeping services" lists). These are what AI quotes for non-branded queries.</div>
+          <div class="m"><span class="mini imp">Impact: High</span><span class="mini eff">Effort: Med</span></div>
+        </div>
+        <div class="act">
+          <div class="t">Pursue BBB accreditation + review velocity</div>
+          <div class="d">Accreditation badge + steady fresh reviews (Google, Yelp) with public owner responses improve the sentiment engines summarise.</div>
+          <div class="m"><span class="mini imp">Impact: Med</span><span class="mini eff">Effort: Med</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CITATION MAP -->
+  <h2 class="section">④ Off-site Citation &amp; Presence Map</h2>
+  <div class="card">
+    <div class="lead">Where engines currently find evidence about Yield. Green = verified present; amber = present but weak/inconsistent.</div>
+    <div class="pres">
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>LinkedIn</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Facebook</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Instagram</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Yelp</span>
+      <span class="pchip"><span class="d" style="background:var(--warn)"></span>BBB (not accredited)</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Nextdoor</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Alignable</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Crunchbase</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>ZoomInfo</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Loudoun Chamber</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Yahoo Local</span>
+      <span class="pchip"><span class="d" style="background:var(--good)"></span>Quality Business Awards</span>
+      <span class="pchip"><span class="d" style="background:var(--warn)"></span>Google Business (verify NAP)</span>
+      <span class="pchip"><span class="d" style="background:var(--bad)"></span>Industry "best-of" roundups (missing)</span>
+      <span class="pchip"><span class="d" style="background:var(--bad)"></span>Own site (crawl-blocked)</span>
+    </div>
+    <div class="note">Engines have <b>plenty of external evidence</b> to work with — the bottleneck is that your <b>own</b> domain (the source you control and that should win) is invisible to them, and you're missing the third-party <b>roundup</b> citations that power non-branded answers.</div>
+  </div>
+
+  <!-- COMPANY PROFILE -->
+  <h2 class="section">⑤ Business Profile (as AI engines currently understand it)</h2>
+  <div class="grid g4">
+    <div class="card"><h2>Founder</h2><div style="font-size:15px;font-weight:700">Rochelle Dallons</div><div class="lead" style="margin-top:4px">Est. 2013 · Woman-owned</div></div>
+    <div class="card"><h2>Location</h2><div style="font-size:15px;font-weight:700">Brambleton, VA 20148</div><div class="lead" style="margin-top:4px">Listed also as Leesburg / Ashburn</div></div>
+    <div class="card"><h2>Reach</h2><div style="font-size:15px;font-weight:700">Remote · Nationwide</div><div class="lead" style="margin-top:4px">Small biz, startups, nonprofits</div></div>
+    <div class="card"><h2>Recognition</h2><div style="font-size:15px;font-weight:700">Best Bookkeeper ×6</div><div class="lead" style="margin-top:4px">Loudoun Times-Mirror 2018–23</div></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2>Services AI associates with the brand</h2>
+    <div class="pres" style="margin-top:8px">
+      <span class="pchip">Full-charge bookkeeping</span>
+      <span class="pchip">QuickBooks setup &amp; management</span>
+      <span class="pchip">Payroll processing</span>
+      <span class="pchip">Financial reporting &amp; statements</span>
+      <span class="pchip">Cash flow &amp; budgeting</span>
+      <span class="pchip">Financial analysis</span>
+      <span class="pchip">Forensic accounting</span>
+      <span class="pchip">Form filing</span>
+      <span class="pchip">A/P · A/R &amp; reconciliations</span>
+      <span class="pchip">Nonprofit bookkeeping</span>
+      <span class="pchip">Startup &amp; restaurant focus</span>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:24px">
+    <b>Methodology &amp; caveats.</b> GEO = Generative Engine Optimization: optimizing how AI answer engines (ChatGPT/OpenAI search, Perplexity, Google AI Overviews, Gemini) discover, trust, and cite a business. Findings are based on live generative-search prompt tests, the brand's off-site citation graph, and direct fetch probes of the domain on 20 Jun 2026. On-page technical items marked "unverifiable" (schema, sitemap, llms.txt) could not be confirmed because the site returned <b>HTTP 403</b> to every non-browser request — itself the audit's central finding. Pillar scores are a weighted heuristic model, not an engine-published metric; treat them as directional. Re-run after the "Now" fixes ship to measure lift.
+  </div>
+
+  <footer>
+    GEO Audit · Yield Bookkeeping Services, LLC · generated 20 Jun 2026 by Arperture<br>
+    Self-contained report — no external assets or tracking. Re-audit recommended 30 days after remediation.
+  </footer>
+
+</div>
+</body>
+</html>
