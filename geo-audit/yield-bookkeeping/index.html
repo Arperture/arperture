@@ -148,6 +148,12 @@
     </div>
   </header>
 
+  <!-- RE-AUDIT BANNER -->
+  <div class="card" style="margin-top:18px;border-left:4px solid var(--crit);background:linear-gradient(135deg,#2a1622,#0f1729)">
+    <h2 style="color:#ff8497">⚠ Re-audit · 20 Jun 2026 — block persists after plugins disabled</h2>
+    <p style="margin:6px 0 0;font-size:13.5px;color:#cdd7ef">The security plugins were turned off and the audit was re-run. The site <b>still returns HTTP&nbsp;403 to AI crawlers</b> (confirmed against the homepage and <code>/our-team-2-2/</code> on the <code>www</code> and apex hosts). This means the block is <b>not at the WordPress plugin layer</b> — it is happening upstream at the <b>CDN / host firewall / server WAF</b>. See the sharpened fix in the roadmap below. Non-branded visibility is unchanged: Yield still does not appear for "best remote bookkeeping services for small business 2026."</p>
+  </div>
+
   <!-- SCORE + VERDICT -->
   <div class="grid g2">
     <div class="card">
@@ -254,7 +260,7 @@
       <ul class="findlist">
         <li class="find s-crit">
           <h4><span class="badge b-crit">Critical</span> AI crawlers are blocked at the door</h4>
-          <p>The homepage returns <b>HTTP 403 Forbidden</b> to any non-browser user-agent (confirmed via multiple fetchers). A security plugin / WAF is filtering by user-agent, which commonly also blocks GPTBot, ClaudeBot, PerplexityBot, Google-Extended and CCBot.</p>
+          <p>The homepage returns <b>HTTP 403 Forbidden</b> to any non-browser user-agent (re-confirmed 20 Jun 2026 after the WordPress security plugins were disabled — the block <b>persists</b>). The filtering is therefore <b>upstream of WordPress</b>: a CDN/host firewall, a "block AI bots / bad bot" toggle, or server-level ModSecurity rules are rejecting GPTBot, ClaudeBot, PerplexityBot, Google-Extended and CCBot.</p>
           <p class="why">Impact: AI engines can't read your pages, so they cite directories <i>about</i> you instead of <i>you</i> — and never quote your services, pricing, or differentiators directly.</p>
         </li>
         <li class="find s-crit">
@@ -279,8 +285,8 @@
       <ul class="findlist">
         <li class="find s-med">
           <h4><span class="badge b-med">Medium</span> NAP / location inconsistency</h4>
-          <p>Listings name the city as <b>Brambleton</b>, <b>Leesburg</b>, and <b>Ashburn</b> interchangeably (ZIP 20148). Inconsistent Name-Address-Phone weakens the entity AI builds about you.</p>
-          <p class="why">Fix: pick one canonical address + phone and make every profile match it exactly.</p>
+          <p>Listings name the city as <b>Brambleton</b>, <b>Leesburg</b>, and <b>Ashburn</b> interchangeably (ZIP 20148). The canonical address is now confirmed as <b>42395 Ryan Rd, Ste 112 #198, Brambleton, VA 20148-4863</b> · (571) 249-4316 · info@yieldbookkeeping.com. Inconsistent Name-Address-Phone weakens the entity AI builds about you.</p>
+          <p class="why">Fix: align every profile (Google Business, Yelp, BBB, LinkedIn, Facebook, Nextdoor, chamber, aggregators) to that exact canonical NAP.</p>
         </li>
         <li class="find s-med">
           <h4><span class="badge b-med">Medium</span> Not BBB-accredited; one prominent negative review</h4>
@@ -294,6 +300,10 @@
         <li class="find s-low">
           <h4><span class="badge b-low">Strength</span> Award &amp; founder authority (E-E-A-T)</h4>
           <p>Founder <b>Rochelle Dallons</b> (est. 2013); "Best Bookkeeper" 6 years running (Loudoun Times-Mirror), LoudounNow Favorite, Best of Brambleton 2024, Top-5 Women-Owned. Strong trust signals to amplify.</p>
+        </li>
+        <li class="find s-low">
+          <h4><span class="badge b-low">Strength</span> Distinctive, quotable differentiator</h4>
+          <p><b>100% US-based accountants — no offshore outsourcing.</b> This is exactly the kind of concrete, comparison-friendly claim AI engines love to extract for "best of" answers. Surface it as a headline fact + FAQ once crawlers can read the site.</p>
         </li>
       </ul>
     </div>
@@ -309,8 +319,8 @@
         <div class="hint">Unblock crawlers &amp; reclaim the basics</div>
 
         <div class="act">
-          <div class="t">Allow AI crawler user-agents</div>
-          <div class="d">Whitelist GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended &amp; CCBot in the WAF/security plugin. Remove the blanket 403 on non-browser agents. Verify a 200 response.</div>
+          <div class="t">Allow AI crawlers at the CDN / host layer (not just plugins)</div>
+          <div class="d">Plugins are already off and the 403 persists — so fix it upstream: in <b>Cloudflare</b> turn off "Block AI Scrapers &amp; Crawlers" / Bot Fight Mode (or add a WAF allow rule for the bot UAs); on the <b>host</b> check ModSecurity / "bad bot" blocking. Whitelist GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended &amp; CCBot, then verify each returns <b>200</b>.</div>
           <div class="m"><span class="mini imp">Impact: Critical</span><span class="mini eff">Effort: Low</span></div>
         </div>
         <div class="act">
@@ -397,7 +407,7 @@
   <h2 class="section">⑤ Business Profile (as AI engines currently understand it)</h2>
   <div class="grid g4">
     <div class="card"><h2>Founder</h2><div style="font-size:15px;font-weight:700">Rochelle Dallons</div><div class="lead" style="margin-top:4px">Est. 2013 · Woman-owned</div></div>
-    <div class="card"><h2>Location</h2><div style="font-size:15px;font-weight:700">Brambleton, VA 20148</div><div class="lead" style="margin-top:4px">Listed also as Leesburg / Ashburn</div></div>
+    <div class="card"><h2>Location</h2><div style="font-size:15px;font-weight:700">Brambleton, VA 20148</div><div class="lead" style="margin-top:4px">42395 Ryan Rd, Ste 112 #198 · (571) 249-4316</div></div>
     <div class="card"><h2>Reach</h2><div style="font-size:15px;font-weight:700">Remote · Nationwide</div><div class="lead" style="margin-top:4px">Small biz, startups, nonprofits</div></div>
     <div class="card"><h2>Recognition</h2><div style="font-size:15px;font-weight:700">Best Bookkeeper ×6</div><div class="lead" style="margin-top:4px">Loudoun Times-Mirror 2018–23</div></div>
   </div>

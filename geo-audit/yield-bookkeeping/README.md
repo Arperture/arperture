@@ -1,9 +1,11 @@
 # GEO Audit — Yield Bookkeeping Services, LLC
 
 **Generative Engine Optimization audit** · `yieldbookkeeping.com` · Brambleton / Leesburg / Ashburn, VA
-**Audit date:** 20 Jun 2026 · **Prepared by:** Arperture
+**Audit date:** 20 Jun 2026 (re-run after security plugins disabled) · **Prepared by:** Arperture
 
 > **Open `index.html` in any browser** for the full interactive dashboard (scores, prompt-test matrix, action board, citation map). This file is the written executive summary.
+
+> ⚠ **Re-audit result:** the WordPress security plugins were turned off and the audit re-run — but the site **still returns HTTP 403 to AI crawlers**. The block is therefore **upstream of WordPress** (CDN / host firewall / server WAF), e.g. a Cloudflare "Block AI Scrapers" toggle or ModSecurity rule. Canonical NAP now confirmed: **42395 Ryan Rd, Ste 112 #198, Brambleton, VA 20148-4863 · (571) 249-4316 · info@yieldbookkeeping.com**. Notable quotable differentiator: **100% US-based accountants, no offshore outsourcing.**
 
 ---
 
