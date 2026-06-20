@@ -36,6 +36,7 @@ DW.LEVELS = [
     props: [{ x: 6, y: 3, t: 'hydrant' }, { x: 13, y: 7, t: 'trashcan' }, { x: 2, y: 8, t: 'tree' }],
     dogs: ['pug', 'golden'],
     squirrels: [{ x: 9, y: 7 }], mailmen: [],
+    bagspots: [{ x: 9, y: 6, n: 3 }],
     karens: [{ x: 8, y: 4, route: [{ x: 6, y: 4 }, { x: 12, y: 4 }] }],
     truck: null,
   },
@@ -52,6 +53,7 @@ DW.LEVELS = [
     props: [{ x: 6, y: 8, t: 'hydrant' }, { x: 10, y: 4, t: 'tree' }, { x: 15, y: 8, t: 'trashcan' }],
     dogs: ['pug', 'golden', 'dal'],
     squirrels: [{ x: 9, y: 8 }, { x: 14, y: 4 }], mailmen: [{ x: 5, y: 4 }],
+    bagspots: [{ x: 8, y: 7, n: 3 }, { x: 15, y: 3, n: 3 }],
     karens: [{ x: 8, y: 5, route: [{ x: 5, y: 5 }, { x: 13, y: 5 }] }],
     truck: null,
   },
@@ -68,6 +70,7 @@ DW.LEVELS = [
     props: [{ x: 6, y: 4, t: 'tree' }, { x: 12, y: 9, t: 'hydrant' }, { x: 17, y: 11, t: 'trashcan' }, { x: 9, y: 7, t: 'tree' }],
     dogs: ['dal', 'golden', 'chi'],
     squirrels: [{ x: 10, y: 8 }, { x: 16, y: 4 }], mailmen: [{ x: 8, y: 4 }],
+    bagspots: [{ x: 6, y: 9, n: 4 }, { x: 16, y: 9, n: 3 }],
     karens: [
       { x: 9, y: 4, route: [{ x: 5, y: 4 }, { x: 16, y: 4 }] },
       { x: 10, y: 11, route: [{ x: 4, y: 11 }, { x: 17, y: 11 }] },
@@ -88,6 +91,7 @@ DW.LEVELS = [
     props: [{ x: 8, y: 6, t: 'hydrant' }, { x: 15, y: 8, t: 'trashcan' }, { x: 11, y: 8, t: 'tree' }, { x: 4, y: 8, t: 'tree' }, { x: 20, y: 6, t: 'hydrant' }],
     dogs: ['pug', 'dal', 'golden', 'chi'],
     squirrels: [{ x: 8, y: 5 }, { x: 14, y: 9 }, { x: 18, y: 6 }], mailmen: [{ x: 11, y: 6 }],
+    bagspots: [{ x: 5, y: 8, n: 4 }, { x: 13, y: 6, n: 3 }, { x: 20, y: 8, n: 4 }],
     karens: [
       { x: 10, y: 6, route: [{ x: 7, y: 6 }, { x: 15, y: 6 }] },
       { x: 13, y: 8, route: [{ x: 8, y: 8 }, { x: 18, y: 8 }] },
@@ -111,6 +115,7 @@ DW.LEVELS = [
     props: [{ x: 7, y: 6, t: 'hydrant' }, { x: 12, y: 8, t: 'trashcan' }, { x: 17, y: 6, t: 'tree' }, { x: 21, y: 8, t: 'hydrant' }, { x: 6, y: 8, t: 'tree' }, { x: 16, y: 11, t: 'trashcan' }],
     dogs: ['dane', 'dal', 'golden', 'chi', 'pug'],
     squirrels: [{ x: 8, y: 5 }, { x: 13, y: 10 }, { x: 18, y: 5 }, { x: 21, y: 10 }], mailmen: [{ x: 11, y: 3 }, { x: 16, y: 11 }],
+    bagspots: [{ x: 6, y: 8, n: 4 }, { x: 12, y: 6, n: 4 }, { x: 17, y: 8, n: 3 }, { x: 21, y: 6, n: 4 }],
     karens: [
       { x: 10, y: 3, route: [{ x: 4, y: 3 }, { x: 20, y: 3 }] },
       { x: 12, y: 6, route: [{ x: 5, y: 6 }, { x: 19, y: 6 }] },

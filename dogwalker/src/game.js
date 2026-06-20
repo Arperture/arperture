@@ -10,13 +10,13 @@
   const LEASH_LEN = 96;         // comfortable leash length
   const TENSION_K = 7.5;        // how hard an overstretched leash yanks the player
   const DOG_PULLBACK = 11;      // leash spring pulling an overstretched dog back
-  const DOG_PULL = 240;         // distraction pull accel (×personality.pull)
-  const AGGRO = 165;            // distraction aggro radius
+  const DOG_PULL = 225;         // distraction pull accel (×personality.pull)
+  const AGGRO = 148;            // distraction aggro radius
   const SCARE_R = 150;          // truck scare radius
   const KAREN_SPEED = 72;
-  const VISION_RANGE = 250;
+  const VISION_RANGE = 225;
   const VISION_HALF = 0.6;      // radians (~34°)
-  const RECORD_TIME = 5;
+  const RECORD_TIME = 6;
   const POOP_DUR = 3;
   const BAG_RANGE = 62;
   const HAND_R = 13;
@@ -109,6 +109,7 @@
 
     const squirrels = (L.squirrels || []).map((s) => ({ x: px(s.x), y: px(s.y), hx: px(s.x), hy: px(s.y), vx: 0, vy: 0, r: 11, t: Math.random() * 3 }));
     const mailmen = (L.mailmen || []).map((m) => ({ x: px(m.x), y: px(m.y), r: 16 }));
+    const pickups = (L.bagspots || []).map((b) => ({ x: px(b.x), y: px(b.y), n: b.n || 3, taken: false, bob: Math.random() * 6 }));
 
     const karens = L.karens.map((k) => ({
       x: px(k.x), y: px(k.y), r: 17,
@@ -124,12 +125,12 @@
     }
 
     G = {
-      L, worldW, worldH, solids, player, dogs, squirrels, mailmen, karens, truck,
+      L, worldW, worldH, solids, player, dogs, squirrels, mailmen, karens, truck, pickups,
       finish: { x: px(L.finish.x), y: px(L.finish.y) },
       poops: [], particles: [],
       bags: stat.startBags(), bagged: 0, time: L.time, windT: rand(8, 14),
       tangled: false, untangleProg: 0, recordingAny: false,
-      result: null, ended: false, elapsed: 0,
+      result: null, ended: false, elapsed: 0, paused: false, tutStep: 0,
     };
   }
 
@@ -321,13 +322,13 @@
     if (k.fsm === 'recording') {
       k.recT -= dt; k.flash = 0.12;
       const t = k.target;
-      if (!t || t.bagged || !karenSees(k, t)) { k.fsm = 'patrol'; k.cool = 1.2; k.target = null; return; }
+      if (!t || t.bagged || !karenSees(k, t)) { k.fsm = 'patrol'; k.cool = 1.8; k.target = null; return; }
       if (k.recT <= 0) { endLevel(false, 'busted'); }
       return;
     }
     if (k.fsm === 'alert') {
       k.alertT -= dt;
-      if (!k.target || k.target.bagged || !karenSees(k, k.target)) { k.fsm = 'patrol'; return; }
+      if (!k.target || k.target.bagged || !karenSees(k, k.target)) { k.fsm = 'patrol'; k.cool = 1.0; k.target = null; return; }
       if (k.alertT <= 0) { k.fsm = 'recording'; k.recT = RECORD_TIME; A.playSfx('camera', 0.8); }
       return;
     }
@@ -342,7 +343,7 @@
     }
     if (k.cool <= 0) {
       for (const poop of G.poops) {
-        if (!poop.bagged && karenSees(k, poop)) { k.fsm = 'alert'; k.alertT = 0.6; k.target = poop; break; }
+        if (!poop.bagged && karenSees(k, poop)) { k.fsm = 'alert'; k.alertT = 1.0; k.target = poop; break; }
       }
     }
   }
@@ -418,7 +419,8 @@
       const clean = unbagged === 0 ? 60 : 0;
       pay = base + timeBonus + clean;
       stars = unbagged === 0 ? 3 : (unbagged <= 1 ? 2 : 1);
-      title = stars === 3 ? 'Perfect Walk!' : 'Nice Walk!';
+      title = (levelIndex + 1 >= DW.LEVELS.length) ? '🏆 Franchise Complete!'
+        : (stars === 3 ? 'Perfect Walk!' : 'Nice Walk!');
     } else {
       pay = G.bagged * 8;
       stars = 0;
@@ -453,6 +455,19 @@
     updateMenuStats();
   }
 
+  const TUT = [
+    [0.4, '🐾 WASD / Arrows to walk your dogs'],
+    [4.5, '🐿️ Dogs lunge at squirrels — fight the pull!'],
+    [9, '🌀 Hold SHIFT to untangle crossed leashes'],
+    [13.5, '💩 Press E / Space near poop to bag it'],
+    [18, '🏁 Reach the flag before time runs out!'],
+  ];
+  function runTutorial() {
+    while (G.tutStep < TUT.length && G.elapsed >= TUT[G.tutStep][0]) {
+      toast(TUT[G.tutStep][1], 3.6); G.tutStep++;
+    }
+  }
+
   function checkRoundEnd() {
     if (G.ended) return;
     if (dist(G.player.x, G.player.y, G.finish.x, G.finish.y) < TILE * 0.7) { endLevel(true); return; }
@@ -463,8 +478,9 @@
   //  UPDATE
   // ======================================================================
   function update(dt) {
-    if (state !== ST.PLAY || !G || G.ended) return;
+    if (state !== ST.PLAY || !G || G.ended || G.paused) return;
     G.elapsed += dt; G.time -= dt;
+    if (levelIndex === 0) runTutorial();
     IN.update();
     if (IN.takeBag()) tryBag();
 
@@ -473,6 +489,15 @@
     updateSquirrels(dt);
     updateTruck(dt);
     updateParticles(dt);
+
+    // bag-dispenser pickups
+    for (const pk of G.pickups) {
+      if (!pk.taken && dist(G.player.x, G.player.y, pk.x, pk.y) < G.player.r + 24) {
+        pk.taken = true; G.bags += pk.n; toast('🛍️ Bag dispenser: +' + pk.n + ' bags!');
+        A.playSfx('cash', 0.4);
+        for (let i = 0; i < 6; i++) spawnParticle(pk.x, pk.y, 'spark');
+      }
+    }
 
     // poop fade for bagged
     for (const p of G.poops) { if (p.bagged) p.fade -= dt * 2; }
@@ -544,6 +569,18 @@
     for (const k of G.karens) drawCone(k);
     // finish
     drawFinish();
+    // bag dispensers
+    for (const pk of G.pickups) {
+      if (pk.taken) continue;
+      pk.bob += 0.05;
+      const yy = pk.y - 6 + Math.sin(pk.bob) * 3;
+      shadow(pk.x, pk.y + 6, 16);
+      ctx.fillStyle = 'rgba(255,210,63,.28)'; ctx.beginPath(); ctx.arc(pk.x, pk.y, 26, 0, 7); ctx.fill();
+      ctx.fillStyle = '#f4a13c'; ctx.strokeStyle = '#22313f'; ctx.lineWidth = 3;
+      ctx.fillRect(pk.x - 15, yy - 13, 30, 26); ctx.strokeRect(pk.x - 15, yy - 13, 30, 26);
+      ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = '#fff'; ctx.fillText('🛍️', pk.x, yy + 6); ctx.textAlign = 'left';
+    }
     // poops
     for (const p of G.poops) {
       ctx.globalAlpha = p.fade; shadow(p.x, p.y, p.r * 0.8);
@@ -606,6 +643,36 @@
       ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 5; ctx.beginPath();
       ctx.arc(sx, sy, 16, -Math.PI / 2, -Math.PI / 2 + G.untangleProg * Math.PI * 2); ctx.stroke();
     }
+
+    // at-risk warning: red pulse + arrow to the poop a Karen is filming
+    const rec = G.karens.find((k) => k.fsm === 'recording' && k.target);
+    if (rec) {
+      ctx.save();
+      ctx.globalAlpha = 0.22 + 0.16 * Math.abs(Math.sin(performance.now() / 130));
+      ctx.strokeStyle = '#ff2d44'; ctx.lineWidth = 14; ctx.strokeRect(7, 7, VW - 14, VH - 14);
+      ctx.restore();
+      drawArrowTo(rec.target.x - cam.x, rec.target.y - cam.y);
+    }
+
+    if (G.paused) {
+      ctx.fillStyle = 'rgba(20,28,40,.6)'; ctx.fillRect(0, 0, VW, VH);
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+      ctx.font = "bold 44px 'Trebuchet MS', sans-serif"; ctx.fillText('⏸ PAUSED', VW / 2, VH / 2);
+      ctx.font = '16px sans-serif'; ctx.fillText('Press P or Esc to resume', VW / 2, VH / 2 + 32);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  function drawArrowTo(tx, ty) {
+    const m = 46, cx = VW / 2, cy = VH / 2;
+    const clx = clamp(tx, m, VW - m), cly = clamp(ty, m, VH - m);
+    const ang = Math.atan2(ty - cy, tx - cx);
+    ctx.save(); ctx.translate(clx, cly); ctx.rotate(ang);
+    ctx.fillStyle = '#ff2d44'; ctx.beginPath();
+    ctx.moveTo(18, 0); ctx.lineTo(-10, -13); ctx.lineTo(-10, 13); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('BAG IT!', clamp(tx, 60, VW - 60), clamp(ty - 24, 30, VH - 10)); ctx.textAlign = 'left';
   }
 
   function drawGround() {
@@ -751,6 +818,23 @@
 
   let audioReady = false;
   function audioUnlock() { if (audioReady) return; audioReady = true; /* gesture lets audio play */ }
+
+  // pause + mute
+  let muted = false;
+  function setPause(p) {
+    if (!G || G.ended || state !== ST.PLAY) return;
+    G.paused = p; $('btnPause').textContent = p ? '▶' : '⏸';
+    if (p) A.stopMusic();
+  }
+  function togglePause() { setPause(!(G && G.paused)); }
+  function toggleMute() { muted = !muted; A.setMuted(muted); $('btnMute').textContent = muted ? '🔇' : '🔊'; }
+  $('btnPause').onclick = togglePause;
+  $('btnMute').onclick = toggleMute;
+  DW.onAnyKey = (code) => {
+    if (state !== ST.PLAY) return;
+    if (code === 'KeyP' || code === 'Escape') togglePause();
+    if (code === 'KeyM') toggleMute();
+  };
 
   // ======================================================================
   //  MAIN LOOP

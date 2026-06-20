@@ -88,7 +88,11 @@ try {
   const kd = (code) => (winListeners.keydown || []).forEach((fn) => fn({ code, preventDefault() {}, repeat: false }));
   const ku = (code) => (winListeners.keyup || []).forEach((fn) => fn({ code }));
   kd('KeyD'); pump(120); kd('Space'); pump(2); kd('ShiftLeft'); pump(60); ku('ShiftLeft'); ku('KeyD');
-  console.log('play frames OK');
+  kd('KeyP'); pump(10); kd('KeyP'); pump(10);        // pause + resume
+  kd('KeyM'); pump(4); kd('KeyM');                   // mute toggle
+  getEl('btnPause').onclick(); pump(6); getEl('btnPause').onclick();
+  getEl('btnMute').onclick(); pump(2);
+  console.log('play + pause/mute frames OK');
   pump(2200);                            // run out the clock -> summary
   console.log('post-clock frames OK');
   getEl('btnRetry').onclick(); pump(40);
