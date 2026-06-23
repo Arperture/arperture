@@ -1,0 +1,12 @@
+{
+  "_comment": "Copy this file to config.json and fill in your HeyGen IDs. Consider adding `.claude/skills/yap/assets/config.json` to .gitignore if these IDs are sensitive.",
+  "avatar_id": "PASTE_HEYGEN_AVATAR_LOOK_ID",
+  "voice_id": "PASTE_HEYGEN_VOICE_ID",
+  "render": {
+    "speed": 1.1,
+    "dimension": { "width": 720, "height": 1280 },
+    "captions": true,
+    "aspect_ratio": "9:16"
+  },
+  "niche": "DESCRIBE_YOUR_NICHE_FOR_TOPIC_RESEARCH"
+}
