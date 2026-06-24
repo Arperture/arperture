@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Implementation Guide — Yield Bookkeeping (SiteGround)</title>
+<style>
+  :root{--bg:#0b1020;--panel:#121a30;--panel2:#0f1729;--line:#23304f;--txt:#e7ecf6;
+    --muted:#9aa8c7;--brand:#5b8cff;--brand2:#7c5cff;--good:#27c499;--warn:#f6b545;--crit:#ff3b5c;--chip:#1b2540}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#1a2547,var(--bg) 55%);
+    color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 22px 90px}
+  a{color:var(--brand)}
+  header.top{padding:24px 26px;border:1px solid var(--line);border-radius:18px;
+    background:linear-gradient(135deg,#16203c,#0e1730);box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;gap:14px;align-items:center}
+  .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));
+    display:grid;place-items:center;font-weight:800;font-size:21px;color:#fff;flex:0 0 auto}
+  h1{font-size:22px;margin:0}
+  .sub{color:var(--muted);font-size:13px;margin-top:3px}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .step h2{font-size:17px;margin:0 0 2px;display:flex;align-items:center;gap:11px}
+  .num{width:30px;height:30px;border-radius:9px;flex:0 0 auto;display:grid;place-items:center;font-weight:800;font-size:15px;color:#04121d}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+  .chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;border:1px solid var(--line);background:var(--chip);color:var(--muted)}
+  .chip.crit{color:#ff8497;border-color:rgba(255,59,92,.4)} .chip.imp{color:#5fe3c0} .chip.eff{color:#ffcf7a}
+  p{font-size:14px;color:#cdd7ef;margin:.5em 0}
+  ol,ul{font-size:14px;color:#cdd7ef;padding-left:22px} li{margin:5px 0}
+  code{background:#0c1426;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;color:#ffd9a8}
+  .path{background:#0c1426;border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:8px;
+    padding:9px 12px;font-size:12.5px;color:#cdd7ef;margin:8px 0;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .codewrap{position:relative;margin:12px 0}
+  pre{background:#070c18;border:1px solid var(--line);border-radius:11px;padding:14px 14px;overflow:auto;
+    font-size:12px;line-height:1.5;color:#d7e0f5;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0;max-height:340px}
+  .copy{position:absolute;top:9px;right:9px;background:var(--brand);color:#04121d;border:none;border-radius:7px;
+    padding:5px 11px;font-size:11.5px;font-weight:700;cursor:pointer}
+  .copy:active{transform:translateY(1px)}
+  .callout{border:1px solid var(--line);border-left:4px solid var(--warn);background:var(--panel2);border-radius:10px;padding:12px 14px;font-size:13px;color:#e7ecf6;margin:12px 0}
+  .callout.crit{border-left-color:var(--crit)} .callout.good{border-left-color:var(--good)}
+  .file{display:inline-block;font-size:12px;color:var(--muted);background:#0c1426;border:1px solid var(--line);border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0}
+  footer{margin-top:30px;color:var(--muted);font-size:12px;text-align:center}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .toc a{font-size:12.5px;text-decoration:none;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:#cdd7ef}
+  .grade{font-size:12px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">Y</div>
+    <div>
+      <h1>GEO Implementation Guide — Yield Bookkeeping</h1>
+      <div class="sub">Hands-on fixes for SiteGround + WordPress · work top-to-bottom · 20 Jun 2026</div>
+    </div>
+  </header>
+
+  <div class="callout crit">
+    <b>Do Step 1 first.</b> Nothing else in this guide matters until AI crawlers stop getting <code>403</code>. The block survived disabling the WordPress plugins, so it's living at the <b>SiteGround / Cloudflare</b> layer. Steps 2–6 only pay off once Step 1 returns a <code>200</code>.
+  </div>
+
+  <div class="toc">
+    <a href="#s1">1 · Unblock crawlers (Critical)</a>
+    <a href="#s2">2 · robots.txt</a>
+    <a href="#s3">3 · Schema (JSON-LD)</a>
+    <a href="#s4">4 · FAQ content</a>
+    <a href="#s5">5 · llms.txt</a>
+    <a href="#s6">6 · NAP + verify</a>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step" id="s1">
+    <h2><span class="num" style="background:var(--crit)">1</span> Unblock AI crawlers on SiteGround</h2>
+    <div class="meta"><span class="chip crit">Critical</span><span class="chip imp">Impact: Critical</span><span class="chip eff">Effort: Low</span></div>
+    <p>The <code>403</code> is coming from the server/CDN, not WordPress. Check these four places <b>in order</b> — the culprit is almost always one of the first two.</p>
+
+    <p><b>1a · Check <code>.htaccess</code> for a user-agent block.</b> Someone may have pasted a "block bad bots" snippet that also catches AI crawlers.</p>
+    <div class="path">Site Tools → Site → File Manager → <code>public_html/.htaccess</code></div>
+    <p>Look for lines like <code>RewriteCond %{HTTP_USER_AGENT} ...</code> ending in <code>[F]</code>/<code>[F,L]</code>, or <code>SetEnvIfNoCase User-Agent ... bad_bot</code> + <code>Deny from env=bad_bot</code>, or <code>BrowserMatchNoCase</code> rules. If any list GPTBot / ClaudeBot / PerplexityBot / "bot" broadly, remove those bots from the block (or remove the rule). Save a backup copy first.</p>
+
+    <p><b>1b · SiteGround's own bot blocking.</b> SiteGround can block AI/scraper bots at the account level.</p>
+    <div class="path">Site Tools → Security → Blocked Bots / Bot Protection  &nbsp;(also check Speed → Caching)</div>
+    <p>If there's an "AI bots" / "block resource-intensive bots" toggle, disable it for the crawlers you want (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot).</p>
+
+    <p><b>1c · Cloudflare</b> (if your site uses SiteGround's Cloudflare integration or your own Cloudflare).</p>
+    <div class="path">Cloudflare dashboard → Security → Bots → turn OFF "Block AI Scrapers and Crawlers"</div>
+    <div class="path">Cloudflare → Security → Settings → turn OFF "Bot Fight Mode"  ·  check WAF → Custom rules for UA blocks</div>
+
+    <p><b>1d · SiteGround WAF / ModSecurity.</b> If still blocked, open a SiteGround support chat and ask them to <i>"allow GPTBot, ClaudeBot, PerplexityBot, Google-Extended and CCBot through the WAF/ModSecurity — they're returning 403."</i> They can whitelist the rule fast.</p>
+
+    <div class="callout good"><b>How to verify the fix:</b> use a free "user-agent test" / "fetch as GPTBot" tool, or ask me to re-run the audit. A correctly-fixed site returns <b>HTTP 200</b> to <code>User-Agent: GPTBot</code> on the homepage.</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="s2">
+    <h2><span class="num" style="background:var(--brand)">2</span> Publish robots.txt (allow the bots + sitemap)</h2>
+    <div class="meta"><span class="chip imp">Impact: High</span><span class="chip eff">Effort: Low</span></div>
+    <p>Add via your SEO plugin (Yoast: <code>Yoast SEO → Tools → File editor → robots.txt</code>; RankMath: <code>Rank Math → General Settings → Edit robots.txt</code>) or place a <code>robots.txt</code> file in <code>public_html/</code>. Paste:</p>
+    <div class="codewrap"><button class="copy">Copy</button><pre id="c-robots">User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+User-agent: *
+Allow: /
+
+Sitemap: https://yieldbookkeeping.com/sitemap_index.xml</pre></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="s3">
+    <h2><span class="num" style="background:var(--brand)">3</span> Add structured data (JSON-LD)</h2>
+    <div class="meta"><span class="chip imp">Impact: High</span><span class="chip eff">Effort: Med</span></div>
+    <p>Paste into the site <code>&lt;head&gt;</code> — easiest with an "Insert Headers and Footers" / "WPCode" plugin, or your SEO plugin's schema/code area. Block 1 goes <b>sitewide</b>; Block 2 goes <b>only on the page showing the FAQ</b>.</p>
+    <div class="callout crit"><b>aggregateRating warning:</b> it's commented out on purpose. Only enable it with your <b>real</b> review average/count (e.g. from Google Business Profile). Fake review markup violates Google policy and can suppress all your rich results.</div>
+    <div class="codewrap"><button class="copy">Copy</button><pre id="c-schema">&lt;!-- BLOCK 1: business entity (sitewide) --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "AccountingService",
+  "@id": "https://yieldbookkeeping.com/#business",
+  "name": "Yield Bookkeeping Services, LLC",
+  "url": "https://yieldbookkeeping.com/",
+  "description": "Woman-owned, award-winning bookkeeping firm providing full-charge bookkeeping, QuickBooks management, payroll, and financial reporting for small businesses and nonprofits nationwide. 100% US-based accountants - no offshore outsourcing.",
+  "telephone": "+1-571-249-4316",
+  "email": "info@yieldbookkeeping.com",
+  "priceRange": "$$",
+  "foundingDate": "2013",
+  "founder": { "@type": "Person", "name": "Rochelle Dallons" },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "42395 Ryan Rd, Ste 112 #198",
+    "addressLocality": "Brambleton",
+    "addressRegion": "VA",
+    "postalCode": "20148",
+    "addressCountry": "US"
+  },
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "knowsAbout": ["Bookkeeping","QuickBooks","Payroll processing","Nonprofit accounting","Financial reporting","Cash flow management"],
+  "sameAs": [
+    "https://www.linkedin.com/company/yield-bookkeeping-services-llc",
+    "https://www.facebook.com/YieldBookkeepingServices/",
+    "https://www.instagram.com/yieldbookkeeping/"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Bookkeeping & Accounting Services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Full-charge bookkeeping" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "QuickBooks setup & management" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Payroll processing" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Financial reporting & statements" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Nonprofit bookkeeping" } }
+    ]
+  }
+}
+&lt;/script&gt;</pre></div>
+    <p style="margin-top:14px">FAQ schema (Block 2) is in the file <span class="file">schema-jsonld.html</span> shipped alongside this guide — paste it on your FAQ page.</p>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" id="s4">
+    <h2><span class="num" style="background:var(--brand)">4</span> Add a visible FAQ section</h2>
+    <div class="meta"><span class="chip imp">Impact: High</span><span class="chip eff">Effort: Med</span></div>
+    <p>Create a <b>/faq/</b> page (and a short FAQ block on the homepage + services page). Lead every answer with the direct fact — that's what engines extract. Full copy is in <span class="file">faq-content.md</span>. The six starter Q&amp;As:</p>
+    <ul>
+      <li>What does Yield Bookkeeping do?</li>
+      <li>Is your bookkeeping done in the US? <i>(lead with "Yes — 100% US-based")</i></li>
+      <li>Who do you work with?</li>
+      <li>Do you work remotely nationwide?</li>
+      <li>What software do you use?</li>
+      <li>How do I get started?</li>
+    </ul>
+    <p>Keep the visible text in sync with the FAQ JSON-LD from Step 3.</p>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" id="s5">
+    <h2><span class="num" style="background:var(--brand)">5</span> Publish llms.txt</h2>
+    <div class="meta"><span class="chip imp">Impact: Med</span><span class="chip eff">Effort: Low</span></div>
+    <p>Upload as <code>public_html/llms.txt</code> (Site Tools → File Manager). It gives AI agents a clean map of your key pages. Full file: <span class="file">llms.txt</span>. Opening lines:</p>
+    <div class="codewrap"><button class="copy">Copy</button><pre id="c-llms"># Yield Bookkeeping Services, LLC
+
+&gt; Woman-owned, award-winning bookkeeping firm serving small businesses and nonprofits nationwide. Full-charge bookkeeping, QuickBooks management, payroll, and financial reporting. 100% US-based accountants - no offshore outsourcing.
+
+## Services
+- Bookkeeping: https://yieldbookkeeping.com/services-new/
+- Who We Serve: https://yieldbookkeeping.com/clients/
+
+## About
+- Our Team: https://yieldbookkeeping.com/our-team-2-2/
+- Contact: https://yieldbookkeeping.com/contact-us/ (571) 249-4316</pre></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" id="s6">
+    <h2><span class="num" style="background:var(--good)">6</span> Standardise NAP &amp; verify everything</h2>
+    <div class="meta"><span class="chip imp">Impact: Med</span><span class="chip eff">Effort: Med</span></div>
+    <p>Make this exact Name-Address-Phone identical on the website footer, Google Business Profile, Yelp, BBB, LinkedIn, Facebook, Nextdoor, the Loudoun Chamber listing, and data aggregators:</p>
+    <div class="path">Yield Bookkeeping Services, LLC · 42395 Ryan Rd, Ste 112 #198, Brambleton, VA 20148 · (571) 249-4316 · info@yieldbookkeeping.com</div>
+    <p>Then validate:</p>
+    <ul>
+      <li>Schema → Google <b>Rich Results Test</b> + <b>Schema.org Validator</b>.</li>
+      <li>Crawler access → confirm homepage returns <b>200</b> to <code>GPTBot</code>.</li>
+      <li>Re-run the GEO audit (ask me) to measure the lift.</li>
+    </ul>
+  </div>
+
+  <div class="callout"><b>Files shipped with this guide:</b>
+    <span class="file">robots.txt</span>
+    <span class="file">schema-jsonld.html</span>
+    <span class="file">llms.txt</span>
+    <span class="file">faq-content.md</span>
+    — all in the <code>implementation/</code> folder, ready to paste.
+  </div>
+
+  <footer>GEO Implementation Guide · Yield Bookkeeping Services · prepared by Arperture · 20 Jun 2026</footer>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var pre=btn.parentElement.querySelector('pre');
+    var txt=pre.innerText;
+    navigator.clipboard.writeText(txt).then(function(){
+      var o=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=o;},1400);
+    });
+  });
+});
+</script>
+</body>
+</html>
