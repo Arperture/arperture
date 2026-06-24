@@ -142,7 +142,7 @@
       </div>
     </div>
     <div class="meta">
-      <div><span class="pill">Audit date: 20 Jun 2026</span></div>
+      <div><span class="pill">Audit date: 20 Jun 2026 · Re-audit #2</span></div>
       <div style="margin-top:8px">Prepared by <b>Arperture</b></div>
       <div>Engines tested: <b>ChatGPT-style search, Perplexity, Google AI Overviews, Gemini</b></div>
     </div>
@@ -150,8 +150,9 @@
 
   <!-- RE-AUDIT BANNER -->
   <div class="card" style="margin-top:18px;border-left:4px solid var(--crit);background:linear-gradient(135deg,#2a1622,#0f1729)">
-    <h2 style="color:#ff8497">⚠ Re-audit · 20 Jun 2026 — block persists after plugins disabled</h2>
-    <p style="margin:6px 0 0;font-size:13.5px;color:#cdd7ef">The security plugins were turned off and the audit was re-run. The site <b>still returns HTTP&nbsp;403 to AI crawlers</b> (confirmed against the homepage and <code>/our-team-2-2/</code> on the <code>www</code> and apex hosts). This means the block is <b>not at the WordPress plugin layer</b> — it is happening upstream at the <b>CDN / host firewall / server WAF</b>. See the sharpened fix in the roadmap below. Non-branded visibility is unchanged: Yield still does not appear for "best remote bookkeeping services for small business 2026."</p>
+    <h2 style="color:#ff8497">⚠ Re-audit #2 · 20 Jun 2026 — crawler access still returns 403 (verification pending)</h2>
+    <p style="margin:6px 0 0;font-size:13.5px;color:#cdd7ef">After the security-plugin changes, the audit was re-run again. From <b>every fetch method available</b> (homepage + fresh pages, apex &amp; <code>www</code>, cache-busted), the site <b>still returns HTTP&nbsp;403</b>. Either Step&nbsp;1 of the implementation guide isn't fully applied yet, or the block persists at the <b>SiteGround / Cloudflare / WAF</b> layer below WordPress. <b>Until the homepage returns 200 to GPTBot, the crawler-accessibility score cannot improve.</b></p>
+    <p style="margin:8px 0 0;font-size:13px;color:#9aa8c7"><b>New this run (via search):</b> confirmed <b>QuickBooks ProAdvisor</b> credential; found an existing on-site guide page (<code>/small-business-bookkeeping-guide/</code>) — good content that engines still can't read while blocked. Non-branded visibility unchanged: Yield is absent from "top bookkeeping services Northern Virginia 2026."</p>
   </div>
 
   <!-- SCORE + VERDICT -->
@@ -247,6 +248,7 @@
         <tr><td>"Yield Bookkeeping Services reviews"</td><td>Branded</td><td><span class="tag t-yes">YES</span></td><td>Pulled from LinkedIn, BBB, Yelp, Quality Business Awards.</td></tr>
         <tr><td>"Remote bookkeeping for small business in Virginia"</td><td>Commercial · non-branded</td><td><span class="tag t-no">NO</span></td><td>Remote Books Online dominates (content-rich, crawlable location pages).</td></tr>
         <tr><td>"Best outsourced bookkeeping for startups / nonprofits"</td><td>Commercial · non-branded</td><td><span class="tag t-no">NO</span></td><td>National players cited; Yield's nonprofit/startup focus not discoverable by crawlers.</td></tr>
+        <tr><td>"Top bookkeeping services Northern Virginia 2026" <span style="color:#9aa8c7;font-size:11px">(re-audit #2)</span></td><td>Regional · non-branded</td><td><span class="tag t-no">NO</span></td><td>Supporting Strategies, Hollins &amp; Hur, Brasfield, Sareen, District Advisory cited — Yield still absent.</td></tr>
         <tr><td>"QuickBooks bookkeeper near Ashburn VA"</td><td>Local · service</td><td><span class="tag t-part">PARTIAL</span></td><td>Appears in directory lists but not as a primary AI recommendation.</td></tr>
       </tbody>
     </table>
@@ -269,9 +271,9 @@
           <p class="why">Impact: competitors with crawlable, content-rich location/topic pages capture the AI recommendation by default.</p>
         </li>
         <li class="find s-high">
-          <h4><span class="badge b-high">High</span> No detectable answer-ready / structured content</h4>
-          <p>No FAQ schema, comparison pages, or quotable statistics could be detected (and can't be verified while the site blocks crawlers). Generative engines preferentially quote concise, structured, fact-dense passages.</p>
-          <p class="why">Impact: even once crawlable, thin/un-structured pages are less likely to be extracted into answers.</p>
+          <h4><span class="badge b-high">High</span> Answer-ready content exists but is unreachable</h4>
+          <p>A guide page (<code>/small-business-bookkeeping-guide/</code>) was found via search — good raw material — but no FAQ schema or comparison pages are detectable, and nothing on-site can be read while the 403 stands. Generative engines preferentially quote concise, structured, fact-dense passages.</p>
+          <p class="why">Impact: the content you already have earns zero AI citations until crawlers are let in; then it needs FAQ/schema structure to be extracted.</p>
         </li>
         <li class="find s-high">
           <h4><span class="badge b-high">High</span> No <code>llms.txt</code> / unverifiable sitemap</h4>
@@ -299,7 +301,7 @@
         </li>
         <li class="find s-low">
           <h4><span class="badge b-low">Strength</span> Award &amp; founder authority (E-E-A-T)</h4>
-          <p>Founder <b>Rochelle Dallons</b> (est. 2013); "Best Bookkeeper" 6 years running (Loudoun Times-Mirror), LoudounNow Favorite, Best of Brambleton 2024, Top-5 Women-Owned. Strong trust signals to amplify.</p>
+          <p>Founder <b>Rochelle Dallons</b> (est. 2013); <b>QuickBooks ProAdvisor</b>; "Best Bookkeeper" 6 years running (Loudoun Times-Mirror), LoudounNow Favorite, Best of Brambleton 2024, Top-5 Women-Owned. Strong trust signals to amplify.</p>
         </li>
         <li class="find s-low">
           <h4><span class="badge b-low">Strength</span> Distinctive, quotable differentiator</h4>
@@ -406,7 +408,7 @@
   <!-- COMPANY PROFILE -->
   <h2 class="section">⑤ Business Profile (as AI engines currently understand it)</h2>
   <div class="grid g4">
-    <div class="card"><h2>Founder</h2><div style="font-size:15px;font-weight:700">Rochelle Dallons</div><div class="lead" style="margin-top:4px">Est. 2013 · Woman-owned</div></div>
+    <div class="card"><h2>Founder</h2><div style="font-size:15px;font-weight:700">Rochelle Dallons</div><div class="lead" style="margin-top:4px">Est. 2013 · Woman-owned · QB ProAdvisor</div></div>
     <div class="card"><h2>Location</h2><div style="font-size:15px;font-weight:700">Brambleton, VA 20148</div><div class="lead" style="margin-top:4px">42395 Ryan Rd, Ste 112 #198 · (571) 249-4316</div></div>
     <div class="card"><h2>Reach</h2><div style="font-size:15px;font-weight:700">Remote · Nationwide</div><div class="lead" style="margin-top:4px">Small biz, startups, nonprofits</div></div>
     <div class="card"><h2>Recognition</h2><div style="font-size:15px;font-weight:700">Best Bookkeeper ×6</div><div class="lead" style="margin-top:4px">Loudoun Times-Mirror 2018–23</div></div>
