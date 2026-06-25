@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Baseline Report — Dolce & Ciabatta Bakery & Cafe</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --surface: #121a30;
+    --surface2: #1a2540;
+    --border: #1e2e50;
+    --accent: #5b8cff;
+    --accent2: #38d9a9;
+    --danger: #ff5c70;
+    --warn: #f0a541;
+    --text: #e7ecf6;
+    --muted: #7a8baa;
+    --score-color: #f0a541;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0b1020 0%, #1a2540 60%, #0e1828 100%);
+    padding: 60px 40px 50px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(91,140,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .logo-bar {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-bar::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 2px;
+    background: var(--accent);
+  }
+  .hero h1 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .hero .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .score-block {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .score-num {
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--warn);
+    line-height: 1;
+    min-width: 90px;
+  }
+  .score-num span { font-size: 28px; color: var(--muted); font-weight: 400; }
+  .score-label h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--warn);
+    margin-bottom: 4px;
+  }
+  .score-label p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.55;
+  }
+  .verdict-box {
+    background: rgba(240,165,65,0.08);
+    border: 1px solid rgba(240,165,65,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #dbb87a;
+    line-height: 1.55;
+  }
+  .verdict-box strong { color: var(--warn); }
+
+  /* SCORE TABLE */
+  .score-table {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-table h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 720px) {
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .score-num { font-size: 48px; }
+    .score-block { flex-direction: column; align-items: flex-start; }
+  }
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .cat-card .dot { font-size: 18px; margin-bottom: 6px; }
+  .cat-card .cat-score { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+  .cat-card .cat-name { font-size: 11px; color: var(--muted); }
+  .red .cat-score { color: var(--danger); }
+  .yellow .cat-score { color: var(--warn); }
+  .green .cat-score { color: var(--accent2); }
+
+  /* CONTENT */
+  .content { max-width: 860px; margin: 0 auto; padding: 0 40px; }
+  .section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    min-width: 24px;
+  }
+  .section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .section-score {
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  p { margin-bottom: 14px; color: #b8c5dc; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text); }
+
+  /* QUERY TABLE */
+  .query-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
+  .query-table th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .query-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: #b8c5dc;
+  }
+  .query-table tr:last-child td { border-bottom: none; }
+  .query-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-yes { background: rgba(56,217,169,0.15); color: var(--accent2); }
+  .tag-partial { background: rgba(240,165,65,0.15); color: var(--warn); }
+  .tag-no { background: rgba(255,92,112,0.15); color: var(--danger); }
+
+  /* CHECK TABLE */
+  .check-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .check-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: #b8c5dc;
+  }
+  .check-table tr:last-child td { border-bottom: none; }
+  .check-table .result-cell { font-size: 13px; white-space: nowrap; }
+  .pass { color: var(--accent2); }
+  .fail { color: var(--danger); }
+  .warn-txt { color: var(--warn); }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: #b8c5dc;
+    font-style: italic;
+  }
+  .callout.danger { border-color: var(--danger); }
+  .callout.warn { border-color: var(--warn); }
+  .callout strong { color: #fff; font-style: normal; }
+
+  /* INVISIBLE COMPETITOR */
+  .ic-block {
+    background: rgba(255,92,112,0.06);
+    border: 1px solid rgba(255,92,112,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .ic-block h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ic-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #c8d0e0;
+  }
+  .ic-item:last-child { margin-bottom: 0; }
+  .ic-item .arrow { color: var(--danger); flex-shrink: 0; margin-top: 1px; }
+
+  /* PRIORITY LIST */
+  .priority-section { margin: 20px 0; }
+  .priority-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .p1 .priority-label { color: var(--danger); }
+  .p2 .priority-label { color: var(--warn); }
+  .p3 .priority-label { color: var(--accent); }
+  .fix-list { list-style: none; }
+  .fix-list li {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+    color: #b8c5dc;
+    align-items: flex-start;
+  }
+  .fix-list li:last-child { border-bottom: none; }
+  .fix-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surface2);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .p1 .fix-num { background: rgba(255,92,112,0.2); color: var(--danger); }
+  .p2 .fix-num { background: rgba(240,165,65,0.2); color: var(--warn); }
+  .p3 .fix-num { background: rgba(91,140,255,0.2); color: var(--accent); }
+  .fix-content strong { color: #fff; display: block; margin-bottom: 2px; }
+  .fix-effort {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* CTA */
+  .cta-block {
+    background: linear-gradient(135deg, #121a30 0%, #1a2a50 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin: 32px 0 0;
+  }
+  .cta-block h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+  .cta-block p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+  .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* APPENDIX */
+  .appendix {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+  .appendix h4 { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+  .query-list { list-style: none; counter-reset: q; }
+  .query-list li {
+    counter-increment: q;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #b8c5dc;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .query-list li:last-child { border-bottom: none; }
+  .query-list li::before {
+    content: counter(q);
+    min-width: 20px;
+    height: 20px;
+    background: var(--surface2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<style>
+#pw-gate{position:fixed;inset:0;z-index:9999;background:#0b1020;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+#pw-box{background:#121a30;border:1px solid #23304f;border-radius:18px;padding:48px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#pw-box .logo{font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5b8cff;margin-bottom:28px}
+#pw-box h2{margin:0 0 8px;font-size:22px;font-weight:600;color:#e7ecf6}
+#pw-box p{margin:0 0 28px;font-size:14px;color:#9aa8c7}
+#pw-input{width:100%;box-sizing:border-box;background:#0b1020;border:1px solid #23304f;border-radius:10px;padding:13px 16px;font-size:15px;color:#e7ecf6;outline:none;transition:border .2s}
+#pw-input:focus{border-color:#5b8cff}
+#pw-btn{margin-top:14px;width:100%;background:#5b8cff;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}
+#pw-btn:hover{background:#4a7aee}
+#pw-err{margin-top:12px;font-size:13px;color:#ff5c70;min-height:18px}
+</style>
+<div id="pw-gate">
+  <div id="pw-box">
+    <div class="logo">Arperture Media</div>
+    <h2>Confidential Report</h2>
+    <p>This report is confidential.<br>Enter the access password to continue.</p>
+    <input id="pw-input" type="password" placeholder="Password" autocomplete="off" />
+    <button id="pw-btn" onclick="checkPw()">View Report</button>
+    <div id="pw-err"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var k="arperture_gate_auth";
+  if(sessionStorage.getItem(k)==="1"){document.getElementById("pw-gate").style.display="none";}
+  document.getElementById("pw-input").addEventListener("keydown",function(e){if(e.key==="Enter")checkPw();});
+})();
+function checkPw(){
+  var v=document.getElementById("pw-input").value;
+  if(v==="dolce26geo"){
+    sessionStorage.setItem("arperture_gate_auth","1");
+    document.getElementById("pw-gate").style.display="none";
+  } else {
+    document.getElementById("pw-err").textContent="Incorrect password. Please try again.";
+    document.getElementById("pw-input").value="";
+    document.getElementById("pw-input").focus();
+  }
+}
+</script>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="logo-bar">Arperture Media · GEO Baseline Report</div>
+    <h1>Dolce &amp; Ciabatta Bakery &amp; Cafe</h1>
+    <p class="subtitle">dolceciabatta.com &nbsp;·&nbsp; 9H Catoctin Cir SW, Leesburg, VA &nbsp;·&nbsp; June 25, 2026</p>
+
+    <div class="score-block">
+      <div class="score-num">37<span>/100</span></div>
+      <div class="score-label">
+        <h2>Findable, Not Cited</h2>
+        <p>AI assistants can find your site — but they have almost nothing to quote when recommending you. Competitors with weaker bakeries but better-structured websites are getting the referrals.</p>
+      </div>
+    </div>
+
+    <div class="verdict-box">
+      <strong>Bottom line:</strong> Dolce &amp; Ciabatta has an excellent reputation — 4.8★ on Google, press coverage in Loudoun Times and Visit Loudoun, 300+ Yelp reviews. The problem is entirely on the website side. AI assistants like ChatGPT and Perplexity have almost nothing to cite, so competitors with weaker bakeries but better-structured websites win the conversation by default.
+    </div>
+  </div>
+</div>
+
+<!-- SCORE GRID -->
+<div class="score-table">
+  <h3>Score Breakdown</h3>
+  <div class="cat-grid">
+    <div class="cat-card red">
+      <div class="dot">🔴</div>
+      <div class="cat-score">10<span style="font-size:14px;color:var(--muted)">/30</span></div>
+      <div class="cat-name">AI Visibility</div>
+    </div>
+    <div class="cat-card red">
+      <div class="dot">🔴</div>
+      <div class="cat-score">7<span style="font-size:14px;color:var(--muted)">/20</span></div>
+      <div class="cat-name">Technical Readiness</div>
+    </div>
+    <div class="cat-card red">
+      <div class="dot">🔴</div>
+      <div class="cat-score">2<span style="font-size:14px;color:var(--muted)">/20</span></div>
+      <div class="cat-name">Content Extractability</div>
+    </div>
+    <div class="cat-card yellow">
+      <div class="dot">🟡</div>
+      <div class="cat-score">14<span style="font-size:14px;color:var(--muted)">/20</span></div>
+      <div class="cat-name">Entity Authority</div>
+    </div>
+    <div class="cat-card red">
+      <div class="dot">🔴</div>
+      <div class="cat-score">4<span style="font-size:14px;color:var(--muted)">/10</span></div>
+      <div class="cat-name">Competitive Position</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- SECTION 1: AI VISIBILITY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>AI Visibility</h2>
+      <span class="section-score" style="color:var(--danger)">10 / 30</span>
+    </div>
+    <p><strong>Named in approximately 2–3 of 10 test queries.</strong> Dolce &amp; Ciabatta appears in web search results for nearly every Leesburg bakery query — that's the good news. The problem: AI assistants draw from structured, extractable content, not just the existence of a site. With almost no indexable text and zero schema, AI engines retrieve the URL but have nothing quotable to recommend.</p>
+
+    <table class="query-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Question Asked</th>
+          <th>Dolce Named?</th>
+          <th>Who Got Named Instead</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Who are the best bakeries in Leesburg, VA?</td>
+          <td><span class="tag tag-partial">Partial</span></td>
+          <td>Mom's Apple Pie, Sweetz Bakery, South Street Under</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Recommend a bakery near Leesburg, VA</td>
+          <td><span class="tag tag-partial">Partial</span></td>
+          <td>Paris Baguette, South Street Under</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Top-rated bakery cafe in Leesburg</td>
+          <td><span class="tag tag-partial">Partial</span></td>
+          <td>Multiple undifferentiated results</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>I need a bakery in Leesburg — who should I call?</td>
+          <td><span class="tag tag-no">Absent</span></td>
+          <td>Dana's Cake Shoppe, general Yelp list</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Best artisan bread in Leesburg / Northern Virginia</td>
+          <td><span class="tag tag-yes">✓ Strong Hit</span></td>
+          <td>Blessed by Bread, Bread Into Existence</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>How do I choose a good bakery for custom cakes?</td>
+          <td><span class="tag tag-no">Absent</span></td>
+          <td>Dana's Cake Shoppe, Honey Bee Pastries, Cakes by Steph</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>What does a custom cake cost at a Leesburg bakery?</td>
+          <td><span class="tag tag-no">Absent</span></td>
+          <td>Dana's Cake Shoppe, Cakes by Steph dominate</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Compare top bakeries for custom cakes in Leesburg VA</td>
+          <td><span class="tag tag-no">Absent</span></td>
+          <td>Honey Bee Pastries, Cakes by Steph, Dana's</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>South Street Under vs alternatives for Leesburg bakery</td>
+          <td><span class="tag tag-partial">Partial</span></td>
+          <td>Various options listed without preference</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Fresh European pastry + artisan coffee in Leesburg — where?</td>
+          <td><span class="tag tag-yes">✓ Strong Hit</span></td>
+          <td>Named alongside Paris Baguette</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:12px;color:var(--muted);margin-top:-4px">AI engine sample (Claude) + retrieval landscape (web search). Manual verification recommended — see Appendix A.</p>
+
+    <div class="ic-block">
+      <h4>⚠ Where Competitors Won</h4>
+      <div class="ic-item">
+        <span class="arrow">→</span>
+        <span><strong>Custom cakes &amp; events</strong> — Dana's Cake Shoppe, Honey Bee Pastries, and Cakes by Steph dominated every custom cake query. Dolce offers custom cakes, but they're buried in an un-crawlable PDF. AI doesn't know this service exists.</span>
+      </div>
+      <div class="ic-item">
+        <span class="arrow">→</span>
+        <span><strong>"Best bakery" general queries</strong> — Despite having a 4.8★ Google rating (highest of any local bakery found in this audit), Dolce isn't surfacing as the <em>recommended</em> option. Competitors with structured content win the first-name citation.</span>
+      </div>
+      <div class="ic-item">
+        <span class="arrow">→</span>
+        <span><strong>Artisan bread + sourdough</strong> — Home bakers like Blessed by Bread and Bread Into Existence compete with keyword-rich content, even though Dolce has a superior stone-hearth German oven and professional European training.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: TECHNICAL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Technical Readiness</h2>
+      <span class="section-score" style="color:var(--danger)">7 / 20</span>
+    </div>
+    <p>The site is crawlable and AI bots aren't blocked — that's better than many SMBs who accidentally toggle "block AI crawlers" in Cloudflare. Everything else needs work.</p>
+
+    <table class="check-table">
+      <tbody>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Organization / LocalBusiness JSON-LD schema</strong></td>
+          <td class="result-cell"><span class="fail">Not found</span></td>
+          <td>AI can't confirm business identity, category, or location from the site</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>FAQPage schema</strong></td>
+          <td class="result-cell"><span class="fail">Not found</span></td>
+          <td>No FAQ pages anywhere on the site</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Service / additional schema types</strong></td>
+          <td class="result-cell"><span class="fail">Not found</span></td>
+          <td>Zero schema beyond basic HTML microdata on &lt;html&gt; tag</td>
+        </tr>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>AI crawlers not blocked</strong></td>
+          <td class="result-cell"><span class="pass">Open</span></td>
+          <td>robots.txt only blocks /wp-admin — GPTBot, ClaudeBot, PerplexityBot can crawl freely</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>llms.txt present</strong></td>
+          <td class="result-cell"><span class="fail">Absent</span></td>
+          <td>No AI-readable site summary (quick win — 30 min to fix)</td>
+        </tr>
+        <tr>
+          <td><span class="warn-txt">⚠</span></td>
+          <td><strong>Clean heading hierarchy</strong></td>
+          <td class="result-cell"><span class="warn-txt">Partial</span></td>
+          <td>Single H1 present but reads "We Are A Team Of Early Risers" — says nothing about what, where, or for whom</td>
+        </tr>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>Static HTML content readable without JS</strong></td>
+          <td class="result-cell"><span class="pass">Passes</span></td>
+          <td>Content renders in static HTML — AI crawlers can read what's there</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout danger">
+      <strong>Site architecture red flag:</strong> The public website has only <strong>3 navigable pages</strong> — Home, Order Online (off-domain), and Contact. All menus are <strong>PDF files</strong>, completely invisible to AI crawlers. When an AI assistant asks "what pastries does Dolce &amp; Ciabatta sell?" — the website has no answer.
+    </div>
+  </div>
+
+  <!-- SECTION 3: CONTENT -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Content Extractability</h2>
+      <span class="section-score" style="color:var(--danger)">2 / 20</span>
+    </div>
+    <p>AI assistants quote content that makes specific, verifiable claims. Vague marketing language gets skipped entirely.</p>
+
+    <div class="callout" style="border-color:var(--accent2);margin-bottom:12px">
+      <strong>What's working:</strong> "Every day, we shape our baked goods by hand and bake them using old-world artisan techniques in a special stone-hearth German engineered oven." — This is the strongest sentence on the site. It's quotable, specific, and the main reason Dolce appears in artisan bread queries at all.
+    </div>
+    <div class="callout danger">
+      <strong>What's holding you back:</strong> "We use the highest-quality ingredients money can buy, and transform them into baked art." — AI engines skip this. "Highest-quality" is a claim every business makes. Vague puffery doesn't get cited.
+    </div>
+
+    <table class="check-table" style="margin-top:16px">
+      <tbody>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Direct "what/who/where" answer in first 2 sentences</strong></td>
+          <td><span class="fail">Missing</span></td>
+          <td>The H1 doesn't say what the business is; Leesburg only appears in the footer</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>FAQ content matching real AI queries</strong></td>
+          <td><span class="fail">None</span></td>
+          <td>No FAQ section anywhere on the site</td>
+        </tr>
+        <tr>
+          <td><span class="warn-txt">⚠</span></td>
+          <td><strong>Specific verifiable claims</strong></td>
+          <td><span class="warn-txt">Minimal</span></td>
+          <td>Stone-hearth oven mentioned; no founding year, staff credentials, quantities, or awards</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Pricing or cost-range info</strong></td>
+          <td><span class="fail">None</span></td>
+          <td>All menus are PDFs — completely invisible to AI crawlers</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Freshness signals (visible dates)</strong></td>
+          <td><span class="fail">None</span></td>
+          <td>No blog, no dates, copyright 2026 but content appears static</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Comparison / "how to choose" content</strong></td>
+          <td><span class="fail">None</span></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4: ENTITY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Entity Authority</h2>
+      <span class="section-score" style="color:var(--warn)">14 / 20</span>
+    </div>
+    <p>This is Dolce &amp; Ciabatta's strength. The real-world reputation is excellent — and it's the foundation that makes GEO fixes effective fast.</p>
+
+    <table class="check-table">
+      <tbody>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>Google Business Profile</strong></td>
+          <td><span class="pass">4.8★</span></td>
+          <td>Highest rating of any independent Leesburg bakery found in this audit</td>
+        </tr>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>Review volume</strong></td>
+          <td><span class="pass">Strong</span></td>
+          <td>301 Yelp reviews · 1,184 aggregated on Restaurant Guru · 21 Tripadvisor</td>
+        </tr>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>NAP consistency</strong></td>
+          <td><span class="pass">Consistent</span></td>
+          <td>Address consistent across site, Yelp, Tripadvisor, Restaurant Guru, Wanderlog</td>
+        </tr>
+        <tr>
+          <td><span class="pass">✓</span></td>
+          <td><strong>Third-party press &amp; mentions</strong></td>
+          <td><span class="pass">Strong</span></td>
+          <td>Loudoun Times (expansion story) · Loudoun Now (origin story) · Visit Loudoun tourism blog · Daily Voice · TikTok @dmvfoodie</td>
+        </tr>
+        <tr>
+          <td><span class="warn-txt">⚠</span></td>
+          <td><strong>Community / social platform presence</strong></td>
+          <td><span class="warn-txt">Partial</span></td>
+          <td>Nextdoor page · Active Facebook · TikTok food influencer mention — no Reddit/Quora footprint</td>
+        </tr>
+        <tr>
+          <td><span class="fail">✗</span></td>
+          <td><strong>Wikipedia / Wikidata entity</strong></td>
+          <td><span class="fail">None</span></td>
+          <td>Rare for SMBs — not expected at this stage</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="border-color:var(--accent2)">
+      Dolce &amp; Ciabatta is the best-reviewed independent bakery in Leesburg. That 4.8★ average and press coverage from regional outlets give it legitimate third-party authority — AI assistants are already aware of the reputation. The gap is that the website doesn't reinforce this with structured data AI can extract and cite.
+    </div>
+  </div>
+
+  <!-- SECTION 5: COMPETITIVE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Competitive Position</h2>
+      <span class="section-score" style="color:var(--danger)">4 / 10</span>
+    </div>
+    <p>No competitor in Leesburg has a dominant GEO presence — this is an open field. The first bakery to structure their content for AI citation will hold that authority for years.</p>
+
+    <table class="check-table">
+      <tbody>
+        <tr>
+          <td>Dana's Cake Shoppe</td>
+          <td>Owns the "custom cakes Leesburg" conversation. Appears on The Knot, WeddingWire, Zola. Dedicated service pages with pricing language.</td>
+        </tr>
+        <tr>
+          <td>South Street Under</td>
+          <td>Competes for "breakfast pastries cafe Leesburg." More descriptive web content, named directly in AI breakfast recommendations.</td>
+        </tr>
+        <tr>
+          <td>Paris Baguette</td>
+          <td>Chain with national SEO infrastructure. Has FAQs, schema, structured menus. Competes for "European bakery" and "pastry cafe" queries.</td>
+        </tr>
+        <tr>
+          <td>Honey Bee Pastries</td>
+          <td>Paris-trained team. Leads with credentials on their site. Appears prominently in AI answers about artisan and custom cakes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>The opportunity:</strong> Dolce &amp; Ciabatta has the strongest real-world authority of any local bakery — best rating, most press mentions, strongest backstory (European-trained chef, stone-hearth oven). Once the technical and content gaps are closed, it's positioned to win every query category. Competitors haven't started this work either.
+    </div>
+  </div>
+
+  <!-- FIX LIST -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Your Prioritized Fix List</h2>
+    </div>
+
+    <div class="priority-section p1">
+      <div class="priority-label">🔥 P1 — Do This Week (biggest impact, lowest effort)</div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">1</div>
+          <div class="fix-content">
+            <strong>Add LocalBusiness + Restaurant JSON-LD schema to the homepage</strong>
+            Include: name, address, phone, hours, URL, priceRange, servesCuisine ("European bakery," "Artisan bread"), geo coordinates. Single highest-impact GEO fix.
+            <div class="fix-effort">Est. 2–3 hrs · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">2</div>
+          <div class="fix-content">
+            <strong>Rewrite the homepage H1</strong>
+            Replace "We Are A Team Of Early Risers" → "Dolce &amp; Ciabatta — Artisan European Bakery &amp; Cafe in Leesburg, VA." AI engines read the H1 first.
+            <div class="fix-effort">Est. 30 min · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">3</div>
+          <div class="fix-content">
+            <strong>Add a 3-sentence "About" paragraph above the fold</strong>
+            Answer: what you are, what you make, where you are, and one differentiator (European-trained pastry chef + stone-hearth oven). Creates quotable content for most local bakery queries.
+            <div class="fix-effort">Est. 1 hr · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">4</div>
+          <div class="fix-content">
+            <strong>Create llms.txt at dolceciabatta.com/llms.txt</strong>
+            Plain-text file summarizing who you are, what you sell, hours, and location. AI systems are reading these. 30-minute win.
+            <div class="fix-effort">Est. 30 min · Impact: Medium</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="priority-section p2">
+      <div class="priority-label">📋 P2 — Do This Month</div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">5</div>
+          <div class="fix-content">
+            <strong>Convert menus from PDF to HTML pages</strong>
+            Create /breads-pastries/, /sandwiches-coffee/, /custom-cakes/ — with products described in text. Makes your full catalog visible to AI crawlers.
+            <div class="fix-effort">Est. 4–8 hrs · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">6</div>
+          <div class="fix-content">
+            <strong>Add a dedicated Custom Cakes service page</strong>
+            Answer: what cakes you make, minimum lead time, how to order, approximate price range, available flavors. One page can capture the entire "custom wedding cake Leesburg" query category from Dana's Cake Shoppe.
+            <div class="fix-effort">Est. 2–4 hrs · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">7</div>
+          <div class="fix-content">
+            <strong>Add a FAQ section with FAQPage schema</strong>
+            5–7 questions: "What type of bread do you make?" / "Do you make custom cakes?" / "What makes your bakery different?" / "Do you offer catering?" Mark up with FAQPage JSON-LD.
+            <div class="fix-effort">Est. 2 hrs · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">8</div>
+          <div class="fix-content">
+            <strong>Surface your credentials explicitly</strong>
+            "European-trained master pastry chef" and "stone-hearth German-engineered oven" are powerful differentiators — make them appear in body text, not just implied.
+            <div class="fix-effort">Est. 1 hr · Impact: Medium</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="priority-section p3">
+      <div class="priority-label">📈 P3 — Build This Quarter</div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">9</div>
+          <div class="fix-content">
+            <strong>Start a monthly blog (2 posts/month minimum)</strong>
+            Topics that win AI citations: "What is kouign amann?" / "Croissant vs danish — the difference." / "How to order a custom cake in Leesburg." Fresh content is what gets cited in retrieval-augmented AI answers.
+            <div class="fix-effort">Ongoing · Impact: High (compounds over time)</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">10</div>
+          <div class="fix-content">
+            <strong>Get listed on wedding &amp; event vendor platforms</strong>
+            The Knot, WeddingWire, Zola — all cited by AI for custom cake queries. Dolce is currently invisible on all three.
+            <div class="fix-effort">Est. 3–4 hrs · Impact: High</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">11</div>
+          <div class="fix-content">
+            <strong>Expand Google Business Profile categories</strong>
+            Add: "Bakery," "Patisserie," "Cake Shop," "Coffee Shop." Each category expands the query surface AI associates with your business.
+            <div class="fix-effort">Est. 30 min · Impact: Medium</div>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">12</div>
+          <div class="fix-content">
+            <strong>Pitch a 2026 press feature</strong>
+            Loudoun Times and Loudoun Now have already covered you. A fresh article resets the freshness signal and gets cited in AI answers for months.
+            <div class="fix-effort">Est. 1 hr to pitch · Impact: High</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h3>Ready to Win the AI Conversation in Leesburg?</h3>
+    <p>The P1 fixes are included in the Foundation package — completed within 5 business days. The P2 &amp; P3 items are exactly what the Growth program ($1,500/mo) handles on an ongoing basis: monthly content, listing distribution, review strategy, and citation tracking.</p>
+    <div class="cta-buttons">
+      <a href="mailto:arperturemusicllc@gmail.com?subject=GEO Audit — Dolce Ciabatta" class="btn-primary">Get Started →</a>
+      <a href="https://arperturemedia.com" class="btn-secondary">Learn More</a>
+    </div>
+  </div>
+
+  <!-- APPENDIX -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">A</span>
+      <h2>Verify It Yourself</h2>
+    </div>
+    <p>Paste these into <strong>ChatGPT</strong> (GPT-4o, web browsing ON) and <strong>Perplexity</strong>. Screenshot the answers — these become evidence for the sales pitch.</p>
+    <div class="appendix">
+      <h4>MANUAL VERIFICATION QUERIES</h4>
+      <ol class="query-list">
+        <li>Who are the best bakeries in Leesburg, VA?</li>
+        <li>Recommend an artisan bakery near Leesburg, Virginia</li>
+        <li>Top-rated bakery cafe in Leesburg, VA</li>
+        <li>I need a bakery in Leesburg — who should I call?</li>
+        <li>Best artisan bread in Northern Virginia — where should I go?</li>
+        <li>How do I choose a good bakery for a custom wedding cake near Leesburg?</li>
+        <li>What does a custom birthday cake cost at a Leesburg bakery?</li>
+        <li>Compare the top bakeries for custom cakes in Leesburg VA</li>
+        <li>South Street Under vs other breakfast pastry cafes in Leesburg</li>
+        <li>I want a fresh-baked European pastry and artisan coffee in Leesburg, VA — where should I go?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">B</span>
+      <h2>Methodology</h2>
+    </div>
+    <p>We tested 10 queries across an AI language model sample (Claude) and the live search retrieval landscape that powers Perplexity, Google AI Overviews, and ChatGPT's browsing mode. Technical checks were performed against the live website on June 25, 2026, including homepage HTML, robots.txt, schema extraction, and heading structure analysis. AI answers vary by phrasing, platform, and day — this report is a baseline snapshot, not a guarantee of any specific AI output.</p>
+    <p><strong>Sources consulted:</strong> Yelp (301 reviews) · Google Maps (4.8★) · Tripadvisor · Loudoun Times · Loudoun Now · Visit Loudoun · Daily Voice · Restaurant Guru (1,184 aggregated reviews) · TikTok @dmvfoodie · Wanderlog</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div><strong>Arperture Media</strong> · arperturemedia.com · Loudoun County, Virginia</div>
+  <div>GEO Baseline Report · June 25, 2026</div>
+</div>
+
+</body>
+</html>
