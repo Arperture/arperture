@@ -46,6 +46,22 @@ export CLOUDFLARE_ACCOUNT_ID="<account id>"
 
 ## Steps
 
+### Option A — Git integration, no CLI (best when the repo is already connected to Cloudflare Pages)
+
+If the repo already auto-deploys to a Pages project (you'll see a `cloudflare-workers-and-pages[bot]`
+comment on PRs), you can publish the audit at a clean standalone URL with **no token and no CLI** —
+create a second Pages project pointed at the audit subfolder:
+
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick the repo.
+2. Set: **Project name** = `<client>-geo-audit` (becomes the subdomain), **Framework preset** = None,
+   **Build command** = *(empty)*, **Build output directory** = the audit folder
+   (e.g. `geo-audit/yield-bookkeeping`).
+3. Set **Production branch** to the branch that contains the audit (the PR branch now, or `main`
+   after merge). **Save and Deploy.**
+4. Result: `https://<client>-geo-audit.pages.dev/` (clean root), auto-redeploying on every push.
+
+### Option B — wrangler CLI (any repo / standalone, needs a token + network)
+
 1. **Resolve inputs.** Pick the audit directory and project name (see Inputs). Verify the
    directory exists and contains `index.html`:
    ```bash
@@ -53,8 +69,10 @@ export CLOUDFLARE_ACCOUNT_ID="<account id>"
    ```
    If there's no `index.html`, tell the user which file should be the landing page and stop.
 
-2. **Confirm credentials are present** (see Prerequisites). If missing, ask the user for them
-   and wait — do not proceed.
+2. **Confirm credentials + connectivity.** Check the env vars are set (see Prerequisites) AND that
+   the environment can reach `api.cloudflare.com` and the npm registry. Some sandboxes/CI restrict
+   egress — if `curl -s https://api.cloudflare.com/client/v4/` returns "Host not in allowlist", the
+   deploy CANNOT run here; tell the user to run the skill locally (or use Option A) instead.
 
 3. **Deploy** by running the bundled script with the audit dir and project name:
    ```bash
