@@ -14,8 +14,9 @@ levels. Built to ship on the **Higgsfield** browser-game platform with an AI art
   opened (not requested).
 - **Game source:** `dogwalker/` — `index.html`, `logic.js`,
   `src/{assets,input,levels,game}.js`, `README.md`
-- **Dev-only (repo root, gitignored):** `smoke.js` (headless test), `dogwalker.zip`
-  (deploy artifact), `dogwalker-standalone.html` (single-file playtest build)
+- **Dev-only:** `smoke.js` (headless test, in git at repo root). `dogwalker.zip` (deploy
+  artifact) and `dogwalker-standalone.html` (single-file playtest build) are **gitignored /
+  generated** — a fresh clone won't have them; rebuild via the commands below.
 - Original design doc: Notion "Dogwalker" (Arperture ▸ Parking Lot ▸ Capture).
 
 ## How to play / test
@@ -42,13 +43,19 @@ levels. Built to ship on the **Higgsfield** browser-game platform with an AI art
 - `logic.js` — minimal Higgsfield game-rules module (game is client-authoritative).
 - Save key `dogwalker_save_v1` (money, unlocked level, upgrade tiers).
 
-## Assets (Higgsfield CDN · model Nano Banana Pro)
+## Assets (Higgsfield CDN · model requested `nano_banana_pro`, served as `nano_banana_2`)
 Base: `https://d8j0ntlcm91z4.cloudfront.net/user_33OO3vKsKDtpmjLQShIWOTRxc3s/`
-- 20 images: player, 3 dogs, Karen, squirrel, mail carrier, poop, garbage truck, hydrant,
-  trashcan, tree, 3 houses, seamless grass/road/sidewalk tiles, favicon. URLs hard-coded in
-  `src/assets.js`.
+- 20 images generated total: player, 3 dogs, Karen, squirrel, mail carrier, poop, garbage
+  truck, hydrant, trashcan, tree, 3 houses, seamless grass/road/sidewalk tiles, favicon,
+  and the 16:9 thumbnail.
+- **18 in-game image URLs are hard-coded in `src/assets.js`** (the `URLS` map). `finish`
+  and `logo` are intentionally left blank → drawn-shape fallback.
+- The **favicon** URL lives in `dogwalker/index.html` (`<link rel="icon">`); the **16:9
+  thumbnail** is not referenced in code (deploy-only, URL below).
 - **Deploy thumbnail (16:9):** `…/hf_20260615_013213_50d6314e-971c-41dd-a012-896175e64d5a.png`
 - **Deploy favicon (1:1):** `…/hf_20260615_014653_3f9489f0-fb5d-4ebe-bda3-baf4e96fc65a.png`
+- All 20 are recoverable from Higgsfield generation history (`show_generations`) if a URL
+  is ever lost.
 
 ## Build / test commands (repo root; no network needed)
 - Smoke test: `node smoke.js` → must print `SMOKE: PASS`.
