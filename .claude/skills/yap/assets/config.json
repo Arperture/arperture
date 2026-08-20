@@ -1,0 +1,14 @@
+{
+  "avatar_id": "fa542cfbba814e5da9411c0834318b06",
+  "voice_id": "9c86694fa77a4a29acca086e822c6fee",
+  "_voice_name": "drew-voice (avatar default; cloned). Swap for another private voice anytime.",
+  "_avatar_note": "Photo avatar 'Photo Avatar', engine avatar_iv, source image is landscape 1440x960. Yap wants 9:16 — verify vertical framing on first render.",
+  "render": {
+    "speed": 1.1,
+    "dimension": { "width": 720, "height": 1280 },
+    "captions": true,
+    "aspect_ratio": "9:16"
+  },
+  "niche": "AI for small business — practical AI tools, automations, and workflows that help small business owners and solopreneurs save time and make money",
+  "channel": "Drew Does AI (YouTube)"
+}
