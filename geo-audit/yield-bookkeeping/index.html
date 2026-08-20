@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Baseline Audit — Yield Bookkeeping Services</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8f8f7;
+    --bg3: #f0efed;
+    --border: #e5e3df;
+    --border2: #d4d1cb;
+    --text: #1a1917;
+    --text2: #6b6760;
+    --text3: #9b998f;
+    --accent: #1a1917;
+    --green: #639922;
+    --green-bg: #eaf3de;
+    --green-text: #27500a;
+    --amber: #ef9f27;
+    --amber-bg: #faeeda;
+    --amber-text: #633806;
+    --red: #e24b4a;
+    --red-bg: #fcebeb;
+    --red-text: #791f1f;
+    --blue-bg: #e6f1fb;
+    --blue-text: #0c447c;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── Header ── */
+  .header { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .brand-name { font-size: 13px; font-weight: 500; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; }
+  .report-meta { font-size: 13px; color: var(--text3); margin-bottom: 12px; }
+  .score-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+  .score-block { display: flex; align-items: baseline; gap: 6px; }
+  .score-num { font-size: 64px; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -2px; }
+  .score-denom { font-size: 22px; color: var(--text3); }
+  .score-badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: var(--amber-bg); color: var(--amber-text); align-self: center; margin-left: 8px; letter-spacing: .04em; text-transform: uppercase; }
+  .verdict { font-size: 15px; color: var(--text2); max-width: 400px; border-left: 2px solid var(--border2); padding-left: 16px; }
+
+  /* ── Categories ── */
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .cat-card { background: var(--bg2); border-radius: var(--radius); padding: 16px; }
+  .cat-label { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+  .cat-score-row { display: flex; align-items: baseline; gap: 3px; margin-bottom: 8px; }
+  .cat-num { font-size: 24px; font-weight: 500; }
+  .cat-denom { font-size: 12px; color: var(--text3); }
+  .bar-track { height: 3px; background: var(--border); border-radius: 2px; }
+  .bar-fill { height: 3px; border-radius: 2px; transition: width .3s; }
+  .bar-green { background: var(--green); }
+  .bar-amber { background: var(--amber); }
+  .bar-red { background: var(--red); }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* ── Query Table ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { font-weight: 500; color: var(--text3); font-size: 11px; text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+  .q-num { color: var(--text3); font-size: 12px; white-space: nowrap; }
+  .q-text { color: var(--text); }
+  .q-competitors { color: var(--text2); font-size: 12px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .tag-hit { background: var(--green-bg); color: var(--green-text); }
+  .tag-partial { background: var(--amber-bg); color: var(--amber-text); }
+  .tag-miss { background: var(--red-bg); color: var(--red-text); }
+
+  /* ── Fix List ── */
+  .fix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .fix-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .fix-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .fix-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; letter-spacing: .03em; }
+  .fix-p1 { background: var(--red-bg); color: var(--red-text); }
+  .fix-p2 { background: var(--amber-bg); color: var(--amber-text); }
+  .fix-p3 { background: var(--blue-bg); color: var(--blue-text); }
+  .fix-subtitle { font-size: 12px; color: var(--text3); }
+  .fix-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); line-height: 1.4; }
+  .fix-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .fix-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border2); margin-top: 6px; flex-shrink: 0; }
+  .fix-card-wide { grid-column: 1 / -1; }
+  .fix-wide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+
+  /* ── Competitive Table ── */
+  .comp-table td:first-child { font-weight: 500; }
+  .comp-table td { font-size: 13px; }
+
+  /* ── Key Finding Callout ── */
+  .callout { background: var(--bg2); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; border-left: 3px solid var(--border2); font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .callout strong { color: var(--text); }
+
+  /* ── Footer ── */
+  .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text3); flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 600px) {
+    .score-num { font-size: 48px; }
+    .fix-grid { grid-template-columns: 1fr; }
+    .fix-card-wide .fix-wide-grid { grid-template-columns: 1fr; }
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .fix-card-wide { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<style>
+#pw-gate{position:fixed;inset:0;z-index:9999;background:#0b1020;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+#pw-box{background:#121a30;border:1px solid #23304f;border-radius:18px;padding:48px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#pw-box .logo{font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5b8cff;margin-bottom:28px}
+#pw-box h2{margin:0 0 8px;font-size:22px;font-weight:600;color:#e7ecf6}
+#pw-box p{margin:0 0 28px;font-size:14px;color:#9aa8c7}
+#pw-input{width:100%;box-sizing:border-box;background:#0b1020;border:1px solid #23304f;border-radius:10px;padding:13px 16px;font-size:15px;color:#e7ecf6;outline:none;transition:border .2s}
+#pw-input:focus{border-color:#5b8cff}
+#pw-btn{margin-top:14px;width:100%;background:#5b8cff;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}
+#pw-btn:hover{background:#4a7aee}
+#pw-err{margin-top:12px;font-size:13px;color:#ff5c70;min-height:18px}
+</style>
+<div id="pw-gate">
+  <div id="pw-box">
+    <div class="logo">Arperture Media</div>
+    <h2>GEO Audit Report</h2>
+    <p>This report is confidential.<br>Enter the access password to continue.</p>
+    <input id="pw-input" type="password" placeholder="Password" autocomplete="off" />
+    <button id="pw-btn" onclick="checkPw()">View Report</button>
+    <div id="pw-err"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var k="geo_audit_auth";
+  if(sessionStorage.getItem(k)==="1"){document.getElementById("pw-gate").style.display="none";}
+  document.getElementById("pw-input").addEventListener("keydown",function(e){if(e.key==="Enter")checkPw();});
+})();
+function checkPw(){
+  var v=document.getElementById("pw-input").value;
+  if(v==="yield-audit-geo"){
+    sessionStorage.setItem("geo_audit_auth","1");
+    document.getElementById("pw-gate").style.display="none";
+  } else {
+    document.getElementById("pw-err").textContent="Incorrect password. Please try again.";
+    document.getElementById("pw-input").value="";
+    document.getElementById("pw-input").focus();
+  }
+}
+</script>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Arperture Media · GEO Baseline Report</span>
+    </div>
+    <p class="report-meta">Yield Bookkeeping Services · yieldbookkeeping.com · June 24, 2026</p>
+    <div class="score-row">
+      <div>
+        <div class="score-block">
+          <span class="score-num">58</span>
+          <span class="score-denom">/100</span>
+          <span class="score-badge">Emerging</span>
+        </div>
+      </div>
+      <p class="verdict">Yield owns local AI conversations in Loudoun County — but national remote bookkeeping queries go to competitors by default.</p>
+    </div>
+  </header>
+
+  <!-- Category Scores -->
+  <section class="section">
+    <p class="section-title">Category Scores</p>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <p class="cat-label">AI Visibility</p>
+        <div class="cat-score-row"><span class="cat-num" style="color:var(--amber)">12</span><span class="cat-denom">/30</span></div>
+        <div class="bar-track"><div class="bar-fill bar-amber" style="width:40%"></div></div>
+      </div>
+      <div class="cat-card">
+        <p class="cat-label">Technical Readiness</p>
+        <div class="cat-score-row"><span class="cat-num" style="color:var(--green)">18</span><span class="cat-denom">/20</span></div>
+        <div class="bar-track"><div class="bar-fill bar-green" style="width:90%"></div></div>
+      </div>
+      <div class="cat-card">
+        <p class="cat-label">Content Extractability</p>
+        <div class="cat-score-row"><span class="cat-num" style="color:var(--amber)">13</span><span class="cat-denom">/20</span></div>
+        <div class="bar-track"><div class="bar-fill bar-amber" style="width:65%"></div></div>
+      </div>
+      <div class="cat-card">
+        <p class="cat-label">Entity Authority</p>
+        <div class="cat-score-row"><span class="cat-num" style="color:var(--amber)">11</span><span class="cat-denom">/20</span></div>
+        <div class="bar-track"><div class="bar-fill bar-amber" style="width:55%"></div></div>
+      </div>
+      <div class="cat-card">
+        <p class="cat-label">Competitive Position</p>
+        <div class="cat-score-row"><span class="cat-num" style="color:var(--red)">4</span><span class="cat-denom">/10</span></div>
+        <div class="bar-track"><div class="bar-fill bar-red" style="width:40%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Query Battery -->
+  <section class="section">
+    <p class="section-title">AI Query Battery — 10 Test Queries</p>
+    <div class="callout">
+      <strong>Key finding:</strong> Yield is named in 4/10 queries — all local-intent, all retrieval-only (not learned cold by AI). Absent from all 6 national queries. This is the "findable, not learned" stage — content fixes have fastest payoff here.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Query</th>
+            <th>Result</th>
+            <th>Who was named</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="q-num">Q1</td>
+            <td class="q-text">Best bookkeepers in Loudoun, VA for small businesses</td>
+            <td><span class="tag tag-partial">Listed</span></td>
+            <td class="q-competitors">Yield, R&R Bookkeeping, ClienTax</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q2</td>
+            <td class="q-text">Recommend a bookkeeper near Brambleton VA</td>
+            <td><span class="tag tag-hit">Named first ✓</span></td>
+            <td class="q-competitors">Yield (first), R&R Bookkeeping</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q3</td>
+            <td class="q-text">Top-rated bookkeeping services in Loudoun County</td>
+            <td><span class="tag tag-hit">Listed ✓</span></td>
+            <td class="q-competitors">Yield, R&R, MAVENTRI, ClienTax</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q4</td>
+            <td class="q-text">I need a bookkeeper in Loudoun — who should I call?</td>
+            <td><span class="tag tag-partial">Listed</span></td>
+            <td class="q-competitors">Yield, local competitors</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q5</td>
+            <td class="q-text">Best remote bookkeeping for small businesses</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Bench, QuickBooks Live, Bookkeeper360, Pilot</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q6</td>
+            <td class="q-text">How do I choose a good bookkeeper?</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Bench, BILL.com, Beancount, Meru Accounting</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q7</td>
+            <td class="q-text">What does a bookkeeper cost for small businesses?</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Generic pricing articles — no pricing on site</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q8</td>
+            <td class="q-text">Compare top bookkeeping providers for small businesses</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Bench, QuickBooks Live, Pilot, 1-800Accountant</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q9</td>
+            <td class="q-text">Bench Accounting alternatives for bookkeeping</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Bookkeeper360, Pilot, 1-800Accountant</td>
+          </tr>
+          <tr>
+            <td class="q-num">Q10</td>
+            <td class="q-text">My books are a mess — who can help me catch up?</td>
+            <td><span class="tag tag-miss">Absent</span></td>
+            <td class="q-competitors">Rocket Bookkeeper, 1-800Accountant, Outbooks</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Fix List -->
+  <section class="section">
+    <p class="section-title">Prioritized Fix List</p>
+    <div class="fix-grid">
+      <div class="fix-card">
+        <div class="fix-header">
+          <span class="fix-badge fix-p1">P1</span>
+          <span class="fix-subtitle">This week — biggest impact</span>
+        </div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Publish pricing page or pricing FAQ — single highest-ROI action. Even "starting at $X/month" is enough to appear in Q7.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Add 5 pricing FAQ questions to /faq/ — target the cost queries where Yield is invisible.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Rewrite homepage meta description — replace tagline with specific, citable claims.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Fix NAP inconsistency — standardize to Brambleton, VA across BBB, Yelp, all directories.</div></div>
+      </div>
+      <div class="fix-card">
+        <div class="fix-header">
+          <span class="fix-badge fix-p2">P2</span>
+          <span class="fix-subtitle">This month</span>
+        </div>
+        <div class="fix-item"><div class="fix-dot"></div><div>"How much does bookkeeping cost?" blog post — targets Q7, 800–1,200 words. This is how Bench wins those queries.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>"How to choose a bookkeeper" guide — targets Q6 with a 5-question checklist weaving in Yield's differentiators.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Google review campaign — email 200+ clients for reviews. Target 25+ at 4.5+ stars.</div></div>
+        <div class="fix-item"><div class="fix-dot"></div><div>Whitelist GPTBot/PerplexityBot in SiteGround WAF settings — 30 minutes.</div></div>
+      </div>
+      <div class="fix-card fix-card-wide">
+        <div class="fix-header">
+          <span class="fix-badge fix-p3">P3</span>
+          <span class="fix-subtitle">This quarter — build national presence</span>
+        </div>
+        <div class="fix-wide-grid">
+          <div class="fix-item"><div class="fix-dot"></div><div>National content: 4–6 posts targeting Q5/Q8/Q9/Q10 — "Remote Bookkeeping for Small Businesses," "Bookkeeping Cleanup," etc.</div></div>
+          <div class="fix-item"><div class="fix-dot"></div><div>List on Clutch, Expertise.com, Alignable — heavily cited by AI for "who should I hire" queries.</div></div>
+          <div class="fix-item"><div class="fix-dot"></div><div>Reddit/Quora presence — 2–3 answers/month in r/smallbusiness, r/Bookkeeping, r/Entrepreneur.</div></div>
+          <div class="fix-item"><div class="fix-dot"></div><div>Press: pitch "Women-Owned Business" angle — Northern VA roundups, small business spotlights, industry publications.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Competitive Context -->
+  <section class="section">
+    <p class="section-title">Why Competitors Win National Queries</p>
+    <div class="table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Competitor</th><th>Why AI cites them</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bench Accounting</td>
+            <td class="q-competitors">Dedicated "how it works" content, published pricing tiers, 1,000+ third-party reviews, press coverage in Forbes/WSJ</td>
+          </tr>
+          <tr>
+            <td>QuickBooks Live</td>
+            <td class="q-competitors">Intuit brand authority, pricing page, integrated into the dominant accounting software</td>
+          </tr>
+          <tr>
+            <td>Bookkeeper360</td>
+            <td class="q-competitors">Clutch listings with reviews, published case studies, comparison pages</td>
+          </tr>
+          <tr>
+            <td>Pilot</td>
+            <td class="q-competitors">Y Combinator backing = press, startup directories, tech-forward positioning</td>
+          </tr>
+          <tr>
+            <td>1-800Accountant</td>
+            <td class="q-competitors">TV advertising, high review volume, cost content specifically targeting "what does it cost?"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:16px;">
+      What these competitors have that Yield doesn't: <strong>published pricing, high review volume on third-party platforms, and content targeting national search queries.</strong> In the local Loudoun market, almost none have a local presence — that's Yield's defensible moat.
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Arperture Media · arperturemedia.com · Loudoun County, Virginia</span>
+    <span>GEO Baseline Report · June 24, 2026 · Score: 58/100 Emerging</span>
+  </footer>
+
+</div>
+</body>
+</html>

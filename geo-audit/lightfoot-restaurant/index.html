@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Baseline Report — Lightfoot Restaurant</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --surface: #121a30;
+    --surface2: #1a2440;
+    --border: #23304f;
+    --accent: #5b8cff;
+    --accent2: #7c3aed;
+    --text: #e7ecf6;
+    --muted: #9aa8c7;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --green-bg: rgba(34,197,94,0.12);
+    --yellow-bg: rgba(245,158,11,0.12);
+    --red-bg: rgba(239,68,68,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1535 0%, #1a1040 50%, #0b1020 100%);
+    padding: 64px 24px 56px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(91,140,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(91,140,255,0.15);
+    border: 1px solid rgba(91,140,255,0.35);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .hero .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+  .score-ring {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 4px solid var(--accent);
+    background: rgba(91,140,255,0.08);
+    margin-bottom: 24px;
+    box-shadow: 0 0 40px rgba(91,140,255,0.2);
+  }
+  .score-ring .num {
+    font-size: 52px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .score-ring .denom {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .verdict-band {
+    display: inline-block;
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.4);
+    color: #f59e0b;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 5px 18px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .verdict-text {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── SCORE TABLE ── */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    max-width: 860px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .score-card .cat { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+  .score-card .pts { font-size: 26px; font-weight: 800; }
+  .score-card .pts span { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .score-card .dot { font-size: 18px; margin-top: 4px; }
+  .green .pts { color: var(--green); }
+  .yellow .pts { color: var(--yellow); }
+  .red .pts { color: var(--red); }
+
+  /* ── MAIN CONTENT ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 24px 0 10px;
+  }
+  p { color: var(--muted); margin-bottom: 14px; }
+  strong { color: var(--text); }
+  em { color: var(--accent); font-style: italic; }
+
+  section { margin-bottom: 56px; }
+
+  /* ── TESTED QUERIES ── */
+  .query-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .query-list li {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    list-style: none;
+  }
+  .query-list li:last-child { border-bottom: none; }
+  .query-list li::before { content: "› "; color: var(--accent); font-weight: 700; }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { background: var(--surface2); }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 11px 16px; border-bottom: 1px solid rgba(35,48,79,0.5); color: var(--muted); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+
+  /* Named / absent badges */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .tag-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .tag-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,158,11,0.3); }
+  .tag-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .callout-red { background: var(--red-bg); border-left: 3px solid var(--red); color: #fca5a5; }
+  .callout-yellow { background: var(--yellow-bg); border-left: 3px solid var(--yellow); color: #fcd34d; }
+  .callout-green { background: var(--green-bg); border-left: 3px solid var(--green); color: #86efac; }
+  .callout-blue { background: rgba(91,140,255,0.1); border-left: 3px solid var(--accent); color: #93c5fd; }
+  .callout strong { color: inherit; }
+
+  /* ── COMPETITOR ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media(max-width:600px) { .comp-grid { grid-template-columns: 1fr; } }
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .comp-card.winner { border-color: rgba(245,158,11,0.4); }
+  .comp-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+  .comp-card ul { list-style: none; }
+  .comp-card li { font-size: 13px; color: var(--muted); padding: 4px 0; }
+  .comp-card li::before { content: "• "; color: var(--accent); }
+  .comp-card.winner li::before { color: var(--yellow); }
+
+  /* ── FIX LIST ── */
+  .fix-section { margin-bottom: 32px; }
+  .fix-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .fix-header .icon { font-size: 20px; }
+  .fix-header h3 { margin: 0; border: none; font-size: 16px; }
+  .p1 h3 { color: #ef4444; }
+  .p2 h3 { color: #f59e0b; }
+  .p3 h3 { color: #5b8cff; }
+
+  .fix-list { list-style: none; }
+  .fix-list li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .fix-num {
+    background: var(--surface2);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .fix-body { flex: 1; }
+  .fix-body strong { display: block; margin-bottom: 3px; color: #fff; }
+  .fix-body span { color: var(--muted); font-size: 13px; }
+
+  /* ── CTA ── */
+  .cta-box {
+    background: linear-gradient(135deg, #1a2040, #1a1040);
+    border: 1px solid rgba(91,140,255,0.3);
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-align: center;
+    margin-top: 48px;
+  }
+  .cta-box h2 { border: none; font-size: 22px; }
+  .cta-box p { max-width: 520px; margin: 12px auto 24px; }
+  .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 13px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid rgba(91,140,255,0.5);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  /* ── APPENDIX ── */
+  .appendix {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+  .appendix pre {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    color: #93c5fd;
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── META BLOCK ── */
+  .meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0 0;
+  }
+  .meta-item { font-size: 12px; color: var(--muted); }
+  .meta-item strong { color: var(--text); }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 16px 0;
+    padding: 12px 20px;
+    background: rgba(91,140,255,0.06);
+    border-radius: 0 8px 8px 0;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .section-num {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 22px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+</style>
+<!-- Arperture: website screenshot hero background -->
+<style>
+.arperture-hero-bg {
+  position: relative !important;
+  background-image: url('https://s0.wordpress.com/mshots/v1/https%3A%2F%2Flightfootrestaurant.com%2F?w=1280&h=720') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+}
+.arperture-hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  z-index: 0;
+  pointer-events: none;
+}
+.arperture-hero-bg > * {
+  position: relative;
+  z-index: 1;
+}
+.arperture-hero-bg h1,
+.arperture-hero-bg p,
+.arperture-hero-bg span,
+.arperture-hero-bg div {
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
+}
+.arperture-hero-bg .badge {
+  color: #93c5fd !important;
+}
+.arperture-hero-bg .verdict-band {
+  color: #fcd34d !important;
+}
+.arperture-hero-bg .score-ring .denom {
+  color: rgba(255,255,255,0.7) !important;
+}
+.arperture-hero-bg .meta-item {
+  color: rgba(255,255,255,0.65) !important;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero arperture-hero-bg">
+  <div class="badge">GEO Baseline Audit · June 25, 2026</div>
+  <h1>Lightfoot Restaurant</h1>
+  <p class="subtitle">lightfootrestaurant.com · Leesburg, VA</p>
+
+  <div class="score-ring">
+    <div class="num">53</div>
+    <div class="denom">/ 100</div>
+  </div>
+
+  <br>
+  <div class="verdict-band">Emerging</div>
+  <br><br>
+  <p class="verdict-text">
+    Lightfoot shows up in AI search results — but almost always in second place. Tuscarora Mill owns the "best restaurant in Leesburg" conversation by default, and Lightfoot's biggest advantage (a gorgeous historic bank building, a 25-year track record, Wine Spectator awards) is nearly invisible to AI engines because the website buries it in images instead of text.
+  </p>
+
+  <div class="meta">
+    <div class="meta-item"><strong>Prepared by</strong> Arperture Media · Andrew Dallons</div>
+    <div class="meta-item"><strong>Audited</strong> June 25, 2026</div>
+    <div class="meta-item"><strong>Site</strong> lightfootrestaurant.com</div>
+  </div>
+</div>
+
+<!-- SCORE CARDS -->
+<div class="score-grid">
+  <div class="score-card green">
+    <div class="cat">AI Visibility</div>
+    <div class="pts">22<span>/30</span></div>
+    <div class="dot">🟢</div>
+  </div>
+  <div class="score-card yellow">
+    <div class="cat">Technical</div>
+    <div class="pts">9<span>/20</span></div>
+    <div class="dot">🟡</div>
+  </div>
+  <div class="score-card red">
+    <div class="cat">Content</div>
+    <div class="pts">6<span>/20</span></div>
+    <div class="dot">🔴</div>
+  </div>
+  <div class="score-card yellow">
+    <div class="cat">Entity Authority</div>
+    <div class="pts">12<span>/20</span></div>
+    <div class="dot">🟡</div>
+  </div>
+  <div class="score-card yellow">
+    <div class="cat">Competitive</div>
+    <div class="pts">4<span>/10</span></div>
+    <div class="dot">🟡</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- WHAT WE TESTED -->
+  <section>
+    <h2>What We Tested</h2>
+    <p>We asked AI assistants the questions Lightfoot's potential diners are typing right now:</p>
+    <ul class="query-list">
+      <li>"Best fine dining restaurant in Leesburg VA for a special occasion"</li>
+      <li>"I need a romantic dinner in a historic building in Leesburg VA — who should I call?"</li>
+      <li>"Private event venue restaurant Leesburg VA for a wedding dinner"</li>
+      <li>"What does a private event at a restaurant in Leesburg VA cost?"</li>
+    </ul>
+    <p>When AI assistants answer these questions, they name specific restaurants. Being named is the new page-one ranking. Here's where Lightfoot stands.</p>
+  </section>
+
+  <!-- AI VISIBILITY -->
+  <section>
+    <h2><span class="section-num">1</span> AI Visibility — 22/30</h2>
+    <p>Named in <strong>8 of 10 test queries.</strong></p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question asked</th>
+            <th>Lightfoot</th>
+            <th>Who got named first</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Q1</td><td>Best fine dining restaurants in Leesburg VA for special occasions</td><td><span class="tag tag-yellow">Listed</span></td><td>Tuscarora Mill</td></tr>
+          <tr><td>Q2</td><td>Recommend a fine dining restaurant near Leesburg, Virginia</td><td><span class="tag tag-yellow">Listed</span></td><td>Tuscarora Mill, The Conche</td></tr>
+          <tr><td>Q3</td><td>Top-rated fine dining in Leesburg</td><td><span class="tag tag-yellow">Listed</span></td><td>Tuscarora Mill</td></tr>
+          <tr><td>Q4</td><td>I need a fine dining restaurant in Leesburg VA — who should I call?</td><td><span class="tag tag-green">Recommended</span></td><td>Tuscarora Mill</td></tr>
+          <tr><td>Q5</td><td>Private event / wedding dinner restaurant Leesburg VA</td><td><span class="tag tag-yellow">Listed</span></td><td>Tuscarora Mill, Birkby House</td></tr>
+          <tr><td>Q6</td><td>How do I choose a fine dining restaurant for a special occasion?</td><td><span class="tag tag-red">Absent</span></td><td>Tuscarora Mill (NoVA context)</td></tr>
+          <tr><td>Q7</td><td>What does a private event at a restaurant in Leesburg VA cost?</td><td><span class="tag tag-red">Absent</span></td><td>No one — pricing data gap</td></tr>
+          <tr><td>Q8</td><td>Compare top fine dining restaurants in Leesburg VA</td><td><span class="tag tag-yellow">Listed</span></td><td>Tuscarora Mill</td></tr>
+          <tr><td>Q9</td><td>Tuscarora Mill vs alternatives for fine dining in Leesburg</td><td><span class="tag tag-green">Recommended</span></td><td>Tuscarora Mill</td></tr>
+          <tr><td>Q10</td><td>Romantic dinner in a historic building in Leesburg VA</td><td><span class="tag tag-green">Recommended ✓</span></td><td>Lightfoot wins this one</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:12px; color: var(--muted); font-style:italic; margin-top:6px;">Pass A = AI engine sample (Claude, cold). Pass B = Retrieval landscape (web search). See Appendix A to verify manually in ChatGPT and Perplexity.</p>
+
+    <h3>⚠ Where Competitors Won</h3>
+    <div class="callout callout-red">
+      <strong>Q1, Q2, Q3, Q5, Q8 — "Best fine dining in Leesburg" queries of all kinds:</strong> Tuscarora Mill is recommended first, every time. Lightfoot is listed as an also-ran despite holding the same Wine Spectator award at the same level. This happens because Tuscarora Mill's website is text-rich — and Lightfoot's homepage is almost entirely images.
+    </div>
+    <div class="callout callout-red">
+      <strong>Q7 — "What does a private event cost at a restaurant in Leesburg?"</strong> Lightfoot is completely absent. This query directly maps to weddings, rehearsal dinners, and corporate events — Lightfoot's highest-margin revenue stream — and it publishes zero pricing information.
+    </div>
+    <div class="callout callout-yellow">
+      <strong>Q10 — Lightfoot wins this one.</strong> "Romantic dinner in a historic building" surfaces Lightfoot as the primary recommendation. This shows the brand's true strength — the 1890s bank building, the vault doors, the Venetian chandeliers. The problem is this positioning isn't visible in any other query.
+    </div>
+  </section>
+
+  <!-- TECHNICAL -->
+  <section>
+    <h2><span class="section-num">2</span> Technical Readiness — 9/20</h2>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Check</th><th>Result</th><th>Impact</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>LocalBusiness / Restaurant JSON-LD schema</td><td><span class="tag tag-yellow">⚠ Unconfirmed</span></td><td>AI crawlers can't reliably identify cuisine, location, or service area</td></tr>
+          <tr><td>FAQPage schema</td><td><span class="tag tag-red">❌ Absent</span></td><td>No FAQ content for AI to extract</td></tr>
+          <tr><td>Service / WebSite / additional schema</td><td><span class="tag tag-yellow">⚠ Minimal</span></td><td>WordPress default only</td></tr>
+          <tr><td>AI crawlers NOT blocked (robots.txt)</td><td><span class="tag tag-green">✅ Clear</span></td><td>GPTBot, ClaudeBot, PerplexityBot can crawl freely</td></tr>
+          <tr><td>llms.txt present</td><td><span class="tag tag-red">❌ Absent</span></td><td>No machine-readable summary for AI agents</td></tr>
+          <tr><td>Clean heading hierarchy</td><td><span class="tag tag-yellow">⚠ Partial</span></td><td>About page works; homepage has almost no headings</td></tr>
+          <tr><td>Static HTML readable without JS</td><td><span class="tag tag-yellow">⚠ Partial</span></td><td>Homepage is a JS image slider — nearly unreadable by crawlers</td></tr>
+          <tr><td>Sitemap</td><td><span class="tag tag-green">✅ Present</span></td><td>sitemap.xml confirmed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-red">
+      <strong>Critical gap:</strong> The homepage <code>og:description</code> is completely empty — verified on crawl. This is the single field that feeds Google's description snippet, social share previews, and AI platform summaries. Lightfoot's homepage is effectively undescribed to any system that reads metadata. This is a 30-minute WordPress fix.
+    </div>
+    <div class="callout callout-green">
+      <strong>Good news:</strong> AI crawlers are NOT blocked. The site IS being indexed by AI training and retrieval systems — the problem is there's almost nothing for them to extract and quote.
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <section>
+    <h2><span class="section-num">3</span> Content Extractability — 6/20</h2>
+    <p>AI assistants quote content that makes specific, verifiable claims. Vague marketing language gets skipped.</p>
+
+    <h3>What's Working</h3>
+    <blockquote>
+      "Lightfoot opened in 1999 after serving as the People's Bank for a half-century. The Romanesque revival–style building was completely renovated… Reminders of its former life, from the bank vault doors to the woodwork and ceilings, can be seen throughout the dining room."
+    </blockquote>
+    <blockquote>
+      "Awarded 2019, 2021 and 2022 Loudoun's Favorites by LoudounNow: #1 Favorite Chef"
+    </blockquote>
+    <p>This is exactly the type of content AI platforms lift and cite. The problem: it's buried on the About page. The homepage — indexed first by every crawler — has none of it.</p>
+
+    <h3>What's Holding Lightfoot Back</h3>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Criterion</th><th>Score</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Direct answer "what/who/where" on homepage</td><td><span class="tag tag-red">0/4</span></td><td>Homepage is images; no opening text</td></tr>
+          <tr><td>Direct answer on About page</td><td><span class="tag tag-yellow">2/4</span></td><td>Present, usable, but only on About</td></tr>
+          <tr><td>Question-phrased FAQ content</td><td><span class="tag tag-red">0/5</span></td><td>No FAQs anywhere on the site</td></tr>
+          <tr><td>Specific, verifiable claims</td><td><span class="tag tag-green">3/4</span></td><td>Year founded, awards, historic building — all quotable</td></tr>
+          <tr><td>Pricing / cost-range information</td><td><span class="tag tag-red">0/3</span></td><td>Zero pricing on site; menus on Toast (off-site)</td></tr>
+          <tr><td>Content freshness / visible dates</td><td><span class="tag tag-yellow">1/2</span></td><td>2025 Wine Spectator badge present; copyright says 2023</td></tr>
+          <tr><td>Comparison / "how to choose" content</td><td><span class="tag tag-red">0/2</span></td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ENTITY AUTHORITY -->
+  <section>
+    <h2><span class="section-num">4</span> Entity Authority — 12/20</h2>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Score</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Google Business Profile</td><td><span class="tag tag-yellow">3/4</span></td><td>GBP link active; completeness unverified</td></tr>
+          <tr><td>Google reviews (25+ at 4.5+)</td><td><span class="tag tag-yellow">3/4</span></td><td>TripAdvisor "Recommended," high Yelp placement; exact Google count unverified</td></tr>
+          <tr><td>Consistent NAP across directories</td><td><span class="tag tag-yellow">3/4</span></td><td>Google, TripAdvisor, Yelp, OpenTable, The Knot, Restaurant Guru, LoudounNow</td></tr>
+          <tr><td>Third-party mentions</td><td><span class="tag tag-yellow">3/4</span></td><td>Wine Spectator listing, LoudounNow 2022/2024, The Knot, Restaurant Guru, Patch (VA), Loudoun Times-Mirror</td></tr>
+          <tr><td>Reddit / community platforms</td><td><span class="tag tag-red">0/2</span></td><td>No active presence in r/nova or local subreddits</td></tr>
+          <tr><td>Wikipedia / Wikidata</td><td><span class="tag tag-red">0/2</span></td><td>Not present</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Entity strength is Lightfoot's biggest asset.</strong> The 25-year history, Wine Spectator award, and local press coverage make AI systems "know" Lightfoot exists. The gap is that on-site content doesn't amplify these signals — so AI answers mention Lightfoot but defer to Tuscarora Mill for primary recommendations.
+    </div>
+  </section>
+
+  <!-- COMPETITIVE -->
+  <section>
+    <h2><span class="section-num">5</span> Competitive Position — 4/10</h2>
+    <p>Primary competitor: <strong>Tuscarora Mill (tuskies.com)</strong> — leads nearly every AI citation for fine dining in Leesburg.</p>
+
+    <div class="comp-grid">
+      <div class="comp-card winner">
+        <h4>🏆 Tuscarora Mill</h4>
+        <ul>
+          <li>Dense homepage text — About, hours, menus described inline</li>
+          <li>Private rooms with capacities listed on-page</li>
+          <li>Dedicated press section (NovA Mag Top 50, Loudoun awards)</li>
+          <li>Same Wine Spectator award level</li>
+          <li>Operating since 1985</li>
+        </ul>
+      </div>
+      <div class="comp-card">
+        <h4>Lightfoot Restaurant</h4>
+        <ul>
+          <li>Homepage is near-zero text — image slideshow only</li>
+          <li>Menus off-site (Toast PDF links)</li>
+          <li>Private rooms mentioned but minimal on-page detail</li>
+          <li>Awards scattered in About, not a dedicated section</li>
+          <li>Operating since 1999 — same tier, same award</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>The bottom line:</strong> Tuscarora Mill and Lightfoot are the same tier of restaurant with similar awards and tenure. Tuscarora Mill wins AI recommendations almost entirely because its website is built for text readers — human and AI. That's a solvable gap, not a reputation gap.
+    </div>
+  </section>
+
+  <!-- FIX LIST -->
+  <section>
+    <h2>Your Fix List (Prioritized)</h2>
+
+    <div class="fix-section p1">
+      <div class="fix-header">
+        <span class="icon">🔥</span>
+        <h3>P1 — Do This Week</h3>
+      </div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">1</div>
+          <div class="fix-body">
+            <strong>Fill the homepage og:description</strong>
+            <span>Currently empty — add a 155-character description: "Fine dining in historic downtown Leesburg, VA since 1999. Inspired American cuisine, Wine Spectator award-winning wine list, private events &amp; wedding dinners." 30 minutes in WordPress. Immediate Google + AI impact.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">2</div>
+          <div class="fix-body">
+            <strong>Add Restaurant JSON-LD schema to the homepage</strong>
+            <span>One &lt;script&gt; block with @type: Restaurant, name, address, phone, hours, cuisine, priceRange, and URL. Tells every AI platform exactly what Lightfoot is. Paste-ready code provided upon sign-off. (~1 hour)</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">3</div>
+          <div class="fix-body">
+            <strong>Add 2–3 sentences of static text above the image slider</strong>
+            <span>AI crawlers currently land on the homepage and see zero readable content. Add one paragraph: what Lightfoot is, where, since when. The About page copy already has this — repurpose it. (~30 min)</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">4</div>
+          <div class="fix-body">
+            <strong>Create llms.txt</strong>
+            <span>A simple text file at lightfootrestaurant.com/llms.txt with a 200-word plain-English summary — what, where, since when, awards, services. No AI assistant currently finds this. A 15-minute file that signals "we want AI to understand us."</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fix-section p2">
+      <div class="fix-header">
+        <span class="icon">📋</span>
+        <h3>P2 — Do This Month</h3>
+      </div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">1</div>
+          <div class="fix-body">
+            <strong>Build a FAQ page</strong>
+            <span>8–10 question-phrased entries matching real AI queries: "What is Lightfoot's cuisine style?" / "Do you have private dining rooms?" / "What's included in a rehearsal dinner package?" Highest-ROI content type for AI citations.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">2</div>
+          <div class="fix-body">
+            <strong>Add price ranges</strong>
+            <span>Even approximate ranges ("Entrees $28–48; private event packages from $X,XXX") make the site quotable for cost-intent queries. These queries directly correlate to booking calls — and Lightfoot is currently invisible in them.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">3</div>
+          <div class="fix-body">
+            <strong>Private events page rebuild</strong>
+            <span>Sheridan Room, Greene Room, Marshall Room, Piano Bar — each needs capacity, setup options, minimum spend, and a photo. This is the content that drives private event inquiry queries where Lightfoot currently loses to Tuscarora Mill.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">4</div>
+          <div class="fix-body">
+            <strong>Move menu content on-page</strong>
+            <span>Add a text summary of menu sections and signature dishes with price range. The full menu on Toast is fine, but add a teaser so AI crawlers have something to quote.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fix-section p3">
+      <div class="fix-header">
+        <span class="icon">📈</span>
+        <h3>P3 — Build This Quarter</h3>
+      </div>
+      <ul class="fix-list">
+        <li>
+          <div class="fix-num">1</div>
+          <div class="fix-body">
+            <strong>Blog / content hub</strong>
+            <span>Monthly posts tied to seasonal menus, wine pairings, award announcements, event recaps. AI engines prioritize fresh, dated content. 2–3 posts per quarter move the needle.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">2</div>
+          <div class="fix-body">
+            <strong>Community platform presence</strong>
+            <span>Get active in r/nova and r/northernva (answer questions like "best anniversary dinner near me"), and Quora for local dining. Perplexity and ChatGPT actively pull from these platforms.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">3</div>
+          <div class="fix-body">
+            <strong>Structured press / awards archive</strong>
+            <span>A dedicated /awards or /press page listing every award chronologically with year and issuing publication. AI systems treat well-organized press pages as authority signals.</span>
+          </div>
+        </li>
+        <li>
+          <div class="fix-num">4</div>
+          <div class="fix-body">
+            <strong>Google Business Profile audit</strong>
+            <span>Ensure all GBP categories are complete: photos, Q&amp;A populated, posts active, attributes filled (romantic, good for special occasions, wine bar, private dining).</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <h2>What Happens Next</h2>
+    <p>The P1 fixes take less than 3 hours of dev time and are included in the <strong>Foundation package</strong> — most go live within 5 business days. The P2 and P3 items are what the <strong>Growth program ($1,500/mo)</strong> handles ongoing: monthly citation-optimized content, listing distribution, review strategy, and AI citation tracking.</p>
+    <p style="margin-top:12px; font-size:13px;">Tuscarora Mill doesn't have a head start in authority — it has a head start in website text density. That's a faster gap to close than you might think. And in this market, almost no one has started yet.</p>
+    <div class="cta-btns">
+      <a class="btn-primary" href="mailto:arperturemusicllc@gmail.com?subject=GEO%20Foundation%20Package%20-%20Lightfoot%20Restaurant">Start with Foundation →</a>
+      <a class="btn-secondary" href="mailto:arperturemusicllc@gmail.com?subject=GEO%20Questions%20-%20Lightfoot%20Restaurant">Ask a Question</a>
+    </div>
+  </div>
+
+  <!-- APPENDIX A -->
+  <section style="margin-top:56px;">
+    <h2>Appendix A — Verify It Yourself</h2>
+    <p>Paste these into <strong>ChatGPT</strong> (GPT-4o with browsing ON) and <strong>Perplexity</strong>. Screenshot who gets named. These screenshots become live-demo evidence.</p>
+    <div class="appendix">
+      <pre>MANUAL VERIFICATION — paste into ChatGPT and Perplexity:
+
+1. Who are the best fine dining restaurants in Leesburg, Virginia for a special occasion?
+2. Recommend a fine dining restaurant near Leesburg, Virginia
+3. Top-rated fine dining restaurants in Leesburg VA
+4. I need a fine dining restaurant in Leesburg VA for a special occasion — who should I call?
+5. Best restaurant in Leesburg VA for a private wedding rehearsal dinner
+6. How do I choose a fine dining restaurant for a special occasion in Northern Virginia?
+7. What does a private event at a restaurant in Leesburg VA cost?
+8. Compare the top fine dining restaurants in Leesburg VA
+9. Tuscarora Mill alternatives for fine dining in Leesburg Virginia
+10. Best romantic dinner in a historic building in Leesburg VA — recommendations?</pre>
+    </div>
+  </section>
+
+  <!-- APPENDIX B -->
+  <section>
+    <h2>Appendix B — Methodology</h2>
+    <p>We tested 10 queries across a two-pass protocol: <strong>Pass A</strong> sampled an AI language model's cold response (what a generative engine says without browsing); <strong>Pass B</strong> examined the live retrieval landscape via web search, which approximates the sources Perplexity, Google AI Overviews, and ChatGPT browsing mode draw from. Technical checks (robots.txt, llms.txt, og:description, schema, static content) were performed against the live website on June 25, 2026.</p>
+    <p>AI answers vary by phrasing, platform, and date — this report is a baseline snapshot, not a guarantee of any specific AI output. Manual ChatGPT and Perplexity verification is recommended before final client delivery.</p>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Prepared by <a href="https://arperturemedia.com">Arperture Media</a> · Loudoun County, Virginia · June 25, 2026</p>
+  <p style="margin-top:6px; font-size:12px;">Confidential — prepared exclusively for Lightfoot Restaurant</p>
+</footer>
+
+</body>
+</html>
+<!-- build: 20260625T180655Z -->

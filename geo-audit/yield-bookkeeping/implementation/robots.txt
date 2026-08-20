@@ -1,0 +1,58 @@
+# robots.txt for yieldbookkeeping.com
+# Goal: explicitly allow AI answer-engine crawlers + standard search bots.
+# NOTE: robots.txt does NOT cause a 403 — if bots are getting 403 the block is
+# elsewhere (see IMPLEMENTATION-GUIDE step 1). This file removes any robots-level
+# ambiguity and points crawlers at your sitemap.
+
+# --- AI answer engines ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# --- Everyone else ---
+User-agent: *
+Allow: /
+
+Sitemap: https://yieldbookkeeping.com/sitemap_index.xml
+Sitemap: https://yieldbookkeeping.com/sitemap.xml

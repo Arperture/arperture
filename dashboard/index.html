@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Amy · Daily Task Command Center</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a30; --panel2:#0f1730; --line:#23304f;
+    --ink:#e7ecf6; --muted:#9aa8c7; --muted2:#6b7aa0;
+    --accent:#5b8cff; --accent2:#8ab4ff;
+    --ok:#37d399; --sched:#5b8cff; --schedbg:rgba(91,140,255,.12);
+    --radius:16px;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 700px at 15% -10%, #16224a 0%, transparent 55%),
+               radial-gradient(1000px 600px at 100% 0%, #1a1740 0%, transparent 50%), var(--bg);
+    color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 24px 80px}
+  header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand .dot{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7a5bff);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#fff;box-shadow:0 8px 24px rgba(91,140,255,.4)}
+  .brand h1{margin:0;font-size:22px;font-weight:650;letter-spacing:-.01em}
+  .brand .sub{margin:2px 0 0;font-size:13px;color:var(--muted)}
+  .clock{text-align:right}
+  .clock .time{font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .clock .date{font-size:13px;color:var(--muted);margin-top:2px}
+  .resultsbar{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 24px;padding:15px 18px;
+    background:linear-gradient(180deg,#151d38,#101830);border:1px solid #2b3a63;border-radius:14px;color:#8ab4ff;
+    font-weight:600;font-size:14.5px;text-decoration:none;transition:border-color .2s}
+  .resultsbar:hover{border-color:#3a4d80}
+  .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+  .stat{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .stat .n{font-size:30px;font-weight:680;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .seclabel{display:flex;align-items:center;gap:10px;margin:8px 2px 14px;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted2);font-weight:600}
+  .seclabel .ln{height:1px;background:var(--line);flex:1}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 18px 16px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#31447a;transform:translateY(-1px)}
+  .card.today::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),#7a5bff)}
+  .card.offday{opacity:.62}
+  .card .chead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .card h3{margin:0;font-size:16px;font-weight:640;letter-spacing:-.01em}
+  .card .sched{font-size:12px;color:var(--muted);margin-top:4px}
+  .todaytag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent2);
+    background:var(--schedbg);border:1px solid rgba(91,140,255,.3);border-radius:999px;padding:3px 8px;white-space:nowrap;margin-left:8px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;padding:5px 10px;border-radius:999px;white-space:nowrap;
+    color:var(--accent2);background:var(--schedbg)}
+  .pill .pd{width:7px;height:7px;border-radius:50%;background:var(--sched)}
+  .desc{font-size:13px;color:var(--muted);line-height:1.5;margin:14px 0 0}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted2)}
+  .foot .nextc{color:var(--accent2);font-weight:560;font-variant-numeric:tabular-nums}
+  .foot a{color:var(--muted2);text-decoration:none}
+  .foot a:hover{color:var(--accent2)}
+  .pagefoot{margin-top:36px;text-align:center;font-size:12px;color:var(--muted2);line-height:1.7}
+  .pagefoot a{color:var(--muted)}
+  @media (max-width:720px){.strip{grid-template-columns:1fr}.clock{text-align:left}header.top{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="dot">A</div>
+      <div>
+        <h1>Daily Task Command Center</h1>
+        <div class="sub">Amy · Arperture Media · every scheduled task, and when it runs next</div>
+      </div>
+    </div>
+    <div class="clock">
+      <div class="time" id="clock">--:--</div>
+      <div class="date" id="today">—</div>
+    </div>
+  </header>
+
+  <a class="resultsbar" href="https://app.notion.com/p/6f6b153487c744d98d6b745914d3c8bd" target="_blank" rel="noopener">📋&nbsp; Open today’s task results in Notion&nbsp; →</a>
+
+  <section class="strip">
+    <div class="stat"><div class="n" id="s-today">–</div><div class="l">Firing today</div></div>
+    <div class="stat"><div class="n" id="s-week">–</div><div class="l">Active tasks</div></div>
+    <div class="stat"><div class="n" id="s-next">–</div><div class="l">Next task runs</div></div>
+  </section>
+
+  <div class="seclabel"><span>Today</span><span class="ln"></span></div>
+  <div class="grid" id="grid-today"></div>
+
+  <div class="seclabel" id="lbl-week" style="margin-top:30px"><span>Rest of the week</span><span class="ln"></span></div>
+  <div class="grid" id="grid-week"></div>
+
+  <div class="pagefoot">
+    After each task runs it logs its result to the <a href="https://app.notion.com/p/6f6b153487c744d98d6b745914d3c8bd" target="_blank" rel="noopener">Daily Task Runs</a> database in Notion — tap the bar above to read today’s.<br>
+    This board shows the schedule live · times in Eastern · clock updates every second.
+  </div>
+</div>
+
+<script>
+"use strict";
+const NOTION="https://app.notion.com/p/6f6b153487c744d98d6b745914d3c8bd";
+const TASKS=[
+  {name:"Weekday Meeting Prep Brief",hour:11,minute:2,dows:[1,2,3,4,5],schedule:"Weekdays · ~7:00 AM ET",desc:"Today’s meetings, attendees, agendas and context — a one-minute read before your day."},
+  {name:"Weekday Inbox Triage",hour:12,minute:8,dows:[1,2,3,4,5],schedule:"Weekdays · ~8:00 AM ET",desc:"Sorts overnight email by urgency and drafts replies for anything that needs one today."},
+  {name:"Stalled Project Sweep",hour:13,minute:1,dows:[1,2,3,4,5],schedule:"Weekdays · ~9:00 AM ET",desc:"Finds projects that have gone cold and gives you one small step back into the top one."},
+  {name:"Monday Post Ideas",hour:11,minute:5,dows:[1],schedule:"Mondays · ~7:00 AM ET",desc:"Three LinkedIn post drafts from the week’s AI / GEO news — saved to a Google Doc, pinged on Slack."},
+  {name:"Weekly GitHub Secret Scan",hour:0,minute:4,dows:[1],schedule:"Sun night · ~8:00 PM ET",desc:"Scans your repos for exposed keys or tokens and reports anything to rotate."},
+  {name:"Weekly Site Audit",hour:1,minute:1,dows:[6],schedule:"Fri night · ~9:00 PM ET",desc:"Security + SEO/AEO check of arperture.io; prepares fixes on a branch for your review."},
+  {name:"Weekly Audit Reporter",hour:13,minute:7,dows:[6],schedule:"Saturdays · ~9:00 AM ET",desc:"Reads Friday’s audit and gives you a plain-language verdict on the site."},
+];
+const TZ="America/New_York";
+const etDate=d=>new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+const etTime=d=>new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour:"numeric",minute:"2-digit"}).format(d);
+const etClock=d=>new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(d);
+const etLong=d=>new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"long",month:"long",day:"numeric",year:"numeric"}).format(d);
+const etWk=d=>new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"short"}).format(d);
+function nextRun(t,from){const now=from||new Date();for(let a=0;a<15;a++){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+a,t.hour,t.minute,0));if(!t.dows.includes(d.getUTCDay()))continue;if(d.getTime()>now.getTime())return d;}return null;}
+function fmtCd(ms){if(ms<=0)return"now";const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60);if(d>0)return`in ${d}d ${h}h`;if(h>0)return`in ${h}h ${m}m`;if(m>0)return`in ${m}m`;return"in <1m";}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function card(t,now){
+  const next=nextRun(t,now); const today=next&&etDate(next)===etDate(now);
+  const tag=today?`<span class="todaytag">Today</span>`:"";
+  const pill=today?`<span class="pill"><span class="pd"></span>Today</span>`:`<span class="pill"><span class="pd"></span>Scheduled</span>`;
+  const nx=next?`<span class="nextc" data-next="${next.toISOString()}">${fmtCd(next-now)}</span> · ${etWk(next)} ${etTime(next)}`:"—";
+  return `<div class="card ${today?"today":"offday"}">
+    <div class="chead"><div><h3>${esc(t.name)}</h3><div class="sched">${esc(t.schedule)}${tag}</div></div>${pill}</div>
+    <p class="desc">${esc(t.desc)}</p>
+    <div class="foot"><span>Next: ${nx}</span><a href="${NOTION}" target="_blank" rel="noopener">result in Notion →</a></div>
+  </div>`;
+}
+function render(){
+  const now=new Date();
+  document.getElementById("clock").textContent=etClock(now);
+  document.getElementById("today").textContent=etLong(now);
+  const todayStr=etDate(now); let firing=0; const todayCards=[],weekCards=[]; let soonest=null;
+  TASKS.forEach(t=>{const next=nextRun(t,now); if(next&&(!soonest||next<soonest))soonest=next;
+    const today=next&&etDate(next)===todayStr; if(today)firing++;
+    const c={html:card(t,now),next}; (today?todayCards:weekCards).push(c);});
+  document.getElementById("s-today").textContent=firing;
+  document.getElementById("s-week").textContent=TASKS.length;
+  document.getElementById("s-next").textContent=soonest?fmtCd(soonest-now):"—";
+  const gt=document.getElementById("grid-today");
+  gt.innerHTML=todayCards.length?todayCards.map(c=>c.html).join(""):`<div class="card" style="grid-column:1/-1;text-align:center;color:var(--muted)">Nothing scheduled for today. Enjoy the quiet. 🌤️</div>`;
+  weekCards.sort((a,b)=>(a.next?a.next:Infinity)-(b.next?b.next:Infinity));
+  document.getElementById("grid-week").innerHTML=weekCards.map(c=>c.html).join("");
+  document.getElementById("lbl-week").style.display=weekCards.length?"":"none";
+}
+function tick(){const now=Date.now();document.querySelectorAll("[data-next]").forEach(el=>{el.textContent=fmtCd(new Date(el.getAttribute("data-next")).getTime()-now);});
+  document.getElementById("clock").textContent=etClock(new Date());
+  const ss=document.getElementById("s-next");}
+render(); setInterval(render,60000); setInterval(tick,1000);
+</script>
+</body>
+</html>

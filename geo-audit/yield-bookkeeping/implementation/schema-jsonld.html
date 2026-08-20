@@ -1,0 +1,115 @@
+<!--
+  STRUCTURED DATA (JSON-LD) for yieldbookkeeping.com
+  ===================================================
+  Paste BOTH <script> blocks into the site <head> (sitewide for block #1;
+  the FAQ block #2 only on the page that shows the FAQ).
+
+  How to add in WordPress / SiteGround (no code edit):
+    Option A — your SEO plugin (Yoast/RankMath/SEOPress) usually has a
+      "schema" or "code snippet" area, or use a "Header & Footer Code" /
+      "Insert Headers and Footers" plugin and paste into the <head>.
+    Option B — theme: Appearance → Theme File Editor → header.php (advanced).
+
+  ⚠ aggregateRating: DO NOT invent numbers. Fill ratingValue / reviewCount with
+     your REAL totals (e.g. from Google Business Profile). Fake review markup
+     violates Google's policy and can get all your rich results suppressed.
+     If you don't want to manage it, delete the aggregateRating block entirely.
+-->
+
+<!-- ===== BLOCK 1: Business entity (add sitewide, in <head>) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AccountingService",
+  "@id": "https://yieldbookkeeping.com/#business",
+  "name": "Yield Bookkeeping Services, LLC",
+  "alternateName": "Yield Bookkeeping",
+  "url": "https://yieldbookkeeping.com/",
+  "logo": "https://yieldbookkeeping.com/wp-content/uploads/logo.png",
+  "image": "https://yieldbookkeeping.com/wp-content/uploads/logo.png",
+  "description": "Woman-owned, award-winning bookkeeping firm providing full-charge bookkeeping, QuickBooks management, payroll, and financial reporting for small businesses and nonprofits nationwide. 100% US-based accountants — no offshore outsourcing.",
+  "telephone": "+1-571-249-4316",
+  "email": "info@yieldbookkeeping.com",
+  "priceRange": "$$",
+  "foundingDate": "2013",
+  "founder": { "@type": "Person", "name": "Rochelle Dallons" },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "42395 Ryan Rd, Ste 112 #198",
+    "addressLocality": "Brambleton",
+    "addressRegion": "VA",
+    "postalCode": "20148",
+    "addressCountry": "US"
+  },
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "knowsAbout": [
+    "Bookkeeping", "Full-charge bookkeeping", "QuickBooks", "Payroll processing",
+    "Nonprofit accounting", "Financial reporting", "Cash flow management",
+    "Budgeting", "Accounts payable", "Accounts receivable", "Bank reconciliation"
+  ],
+  "slogan": "Accurate, affordable bookkeeping — 100% US-based.",
+  "sameAs": [
+    "https://www.linkedin.com/company/yield-bookkeeping-services-llc",
+    "https://www.facebook.com/YieldBookkeepingServices/",
+    "https://www.instagram.com/yieldbookkeeping/"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Bookkeeping & Accounting Services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Full-charge bookkeeping" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "QuickBooks setup & management" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Payroll processing" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Financial reporting & statements" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cash flow & budgeting" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Forensic accounting" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Nonprofit bookkeeping" } }
+    ]
+  }
+  /* , "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "REPLACE_WITH_REAL_AVERAGE",
+        "reviewCount": "REPLACE_WITH_REAL_COUNT"
+     }  <-- uncomment ONLY with real numbers */
+}
+</script>
+
+<!-- ===== BLOCK 2: FAQ (add ONLY on the page that displays this FAQ) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does Yield Bookkeeping Services do?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yield Bookkeeping Services provides full-charge bookkeeping for small businesses and nonprofits nationwide — including transaction entry, accounts payable and receivable, bank and credit-card reconciliations, payroll processing, QuickBooks management, and monthly financial statements." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Yield Bookkeeping's work done in the United States?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Yield Bookkeeping employs full-time and part-time accountants based entirely in the United States and does not use offshore outsourced bookkeeping companies." }
+    },
+    {
+      "@type": "Question",
+      "name": "Who does Yield Bookkeeping work with?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yield serves startups, small and mid-sized businesses, restaurants, and nonprofits across the United States. Each client is assigned a dedicated account manager for personalized, responsive service." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Yield Bookkeeping work remotely with clients nationwide?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Yield is a remote bookkeeping firm based in Brambleton, Virginia that serves clients throughout the United States." }
+    },
+    {
+      "@type": "Question",
+      "name": "What accounting software does Yield Bookkeeping use?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yield specializes in QuickBooks, including initial setup, cleanup, and ongoing monthly management, alongside payroll, bill pay, and invoicing." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I get started with Yield Bookkeeping?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Call (571) 249-4316 or email info@yieldbookkeeping.com to schedule a consultation. Yield reviews your current books and recommends a tailored bookkeeping plan." }
+    }
+  ]
+}
+</script>
